@@ -2,7 +2,7 @@
 
 POC to show how configuration should be loaded from employer-config in a core web app.
 
-This requres the foillowing nuget packages:
+This requires the following nuget packages:
 
 ```
 WindowsAzure.Storage  
@@ -12,13 +12,13 @@ WindowsAzure.Storage
  * Note: As of 9.4.0, the Table service is not supported by this library. The advice is to  remain on the pre-9.4 WindowsAzure.Storage NuGet package.
 
 
-Install the Azutre Storage emulator - there's a link on the docs page https://docs.microsoft.com/en-us/azure/storage/common/storage-use-emulator
+Install the Azure Storage emulator - there's a link on the docs page https://docs.microsoft.com/en-us/azure/storage/common/storage-use-emulator
 
 Install the Azure storage explorer from https://azure.microsoft.com/en-us/features/storage-explorer/
 
 
 Configuration needs to be added to [das-employer-config](https://github.com/SkillsFundingAgency/das-employer-config)
-**(Details to be added)**
+**(Details to be added for devops ticket)**
 
 Need the following in the config json:
 ```
@@ -38,7 +38,7 @@ Add a table called `Configuration` and in the table add an entity with
 
 ```
 {
-  "SqlConnectionstring": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=SFA.POC.Matching.Database;Integrated Security=True;MultipleActiveResultSets=True;",
+  "SqlConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=SFA.POC.Matching.Database;Integrated Security=True;MultipleActiveResultSets=True;",
     "Authentication":
     {
       "WtRealm": "myrealm",
