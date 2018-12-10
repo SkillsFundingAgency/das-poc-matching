@@ -1,0 +1,30 @@
+﻿@model sfa.poc.matching.configuration.Configuration.IWebConfiguration
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+
+    <h2>Configuration Loaded</h2>
+
+    <div>
+        <p>
+            <strong>Connection String:</strong> @Model.SqlConnectionString
+        </p>
+        <p>
+            <strong>Realm:</strong> @Model.Authentication.WtRealm
+        </p>
+        <p>
+            <strong>Endpoint:</strong> @Model.Authentication.MetaDataEndpoint
+        </p>
+    </div>
+</body>
+</html>

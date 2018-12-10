@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sfa.poc.matching.configuration", "sfa.poc.matching.configuration\sfa.poc.matching.configuration.csproj", "{B45F5B17-3172-4C25-A1A0-EDBEBC861E2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E642EC9C-DDC6-493C-ACB6-A32A54392DC0}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B45F5B17-3172-4C25-A1A0-EDBEBC861E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B45F5B17-3172-4C25-A1A0-EDBEBC861E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B45F5B17-3172-4C25-A1A0-EDBEBC861E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B45F5B17-3172-4C25-A1A0-EDBEBC861E2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2E4C3B3-35BE-4979-8AAA-3041C5BF5291}
+	EndGlobalSection
+EndGlobal
