@@ -10,6 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.POC.Matching.Application\SFA.POC.Matching.Application.csproj" />
+    <ProjectReference Include="..\SFA.POC.Matching.Data\SFA.POC.Matching.Data.csproj" />
     <ProjectReference Include="..\SFA.POC.Matching.Proximity.Infrastructure\SFA.POC.Matching.Proximity.Infrastructure.csproj" />
   </ItemGroup>
 

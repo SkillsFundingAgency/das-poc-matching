@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.POC.Matching.Proximity.Infrastructure", "SFA.POC.Matching.Proximity.Infrastructure\SFA.POC.Matching.Proximity.Infrastructure.csproj", "{B95F6226-9DEF-4567-B51F-D9CB7779243B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.POC.Matching.Proximity.Infrastructure", "SFA.POC.Matching.Proximity.Infrastructure\SFA.POC.Matching.Proximity.Infrastructure.csproj", "{B95F6226-9DEF-4567-B51F-D9CB7779243B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.POC.Matching.Proximity.Web", "SFA.POC.Matching.Proximity.Web\SFA.POC.Matching.Proximity.Web.csproj", "{6F840275-716F-421A-B38D-0EDCFE0F625D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.POC.Matching.Proximity.Infrastructure.Console", "SFA.POC.Matching.Proximity.Infrastructure.Console\SFA.POC.Matching.Proximity.Infrastructure.Console.csproj", "{DCA4B75F-A465-4FF2-B86D-1CA9CF1D755C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.POC.Matching.Proximity.Web", "SFA.POC.Matching.Proximity.Web\SFA.POC.Matching.Proximity.Web.csproj", "{6F840275-716F-421A-B38D-0EDCFE0F625D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5625CDC6-EE4F-49E1-BF67-B2292FED19C1}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,6 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.POC.Matching.Database", "SFA.POC.Matching.Database\SFA.POC.Matching.Database.sqlproj", "{E0472C0B-A88D-4773-9D22-C31559A38D84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.POC.Matching.Application", "SFA.POC.Matching.Application\SFA.POC.Matching.Application.csproj", "{A0D063E6-23C2-4F66-827C-F6C5D9D523A3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.POC.Matching.Proximity.Console", "SFA.POC.Matching.Proximity.Console\SFA.POC.Matching.Proximity.Console.csproj", "{66323818-1CD1-47DC-BF5B-1587653F4010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.POC.Matching.Data", "SFA.POC.Matching.Data\SFA.POC.Matching.Data.csproj", "{22A72A8A-ADCA-4D4B-9252-2221A777EF25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,16 +34,24 @@ Global
 		{6F840275-716F-421A-B38D-0EDCFE0F625D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F840275-716F-421A-B38D-0EDCFE0F625D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F840275-716F-421A-B38D-0EDCFE0F625D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCA4B75F-A465-4FF2-B86D-1CA9CF1D755C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCA4B75F-A465-4FF2-B86D-1CA9CF1D755C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCA4B75F-A465-4FF2-B86D-1CA9CF1D755C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCA4B75F-A465-4FF2-B86D-1CA9CF1D755C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0472C0B-A88D-4773-9D22-C31559A38D84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0472C0B-A88D-4773-9D22-C31559A38D84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0472C0B-A88D-4773-9D22-C31559A38D84}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{E0472C0B-A88D-4773-9D22-C31559A38D84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0472C0B-A88D-4773-9D22-C31559A38D84}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0472C0B-A88D-4773-9D22-C31559A38D84}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A0D063E6-23C2-4F66-827C-F6C5D9D523A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D063E6-23C2-4F66-827C-F6C5D9D523A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D063E6-23C2-4F66-827C-F6C5D9D523A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D063E6-23C2-4F66-827C-F6C5D9D523A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66323818-1CD1-47DC-BF5B-1587653F4010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66323818-1CD1-47DC-BF5B-1587653F4010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66323818-1CD1-47DC-BF5B-1587653F4010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66323818-1CD1-47DC-BF5B-1587653F4010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22A72A8A-ADCA-4D4B-9252-2221A777EF25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22A72A8A-ADCA-4D4B-9252-2221A777EF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22A72A8A-ADCA-4D4B-9252-2221A777EF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22A72A8A-ADCA-4D4B-9252-2221A777EF25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,7 +16,6 @@ namespace SFA.POC.Matching.Proximity.Web
 {
     public class Startup
     {
-        //public IConfiguration Configuration { get; }
         public IMatchingConfiguration Configuration { get; set; }
 
         public Startup(IConfiguration configuration)

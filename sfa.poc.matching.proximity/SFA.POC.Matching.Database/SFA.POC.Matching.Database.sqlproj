@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{e0472c0b-a88d-4773-9d22-c31559a38d84}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -71,5 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\Query Location.sql" />
+    <None Include="Database.publish.xml" />
   </ItemGroup>
 </Project>

@@ -19,9 +19,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.POC.Matching.Application\SFA.POC.Matching.Application.csproj" />
+    <ProjectReference Include="..\SFA.POC.Matching.Data\SFA.POC.Matching.Data.csproj" />
     <ProjectReference Include="..\SFA.POC.Matching.Proximity.Infrastructure\SFA.POC.Matching.Proximity.Infrastructure.csproj" />
   </ItemGroup>
 

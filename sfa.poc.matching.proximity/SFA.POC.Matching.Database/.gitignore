@@ -1,0 +1,4 @@
+## Specific ignores for database project
+
+# Database publishing file - needs to be 
+!Database.publish.xml

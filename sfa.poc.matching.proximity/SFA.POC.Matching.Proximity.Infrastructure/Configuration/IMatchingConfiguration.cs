@@ -6,5 +6,7 @@ namespace SFA.POC.Matching.Proximity.Infrastructure.Configuration
         string CosmosConnectionString { get; set; }
 
         string SqlConnectionString { get; set; }
+
+        string PostcodeRetrieverBaseUrl { get; set; }
     }
 }
