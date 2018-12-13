@@ -70,7 +70,9 @@
     <PostDeploy Include="PostDeployment\PostDeploy.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\Query Location.sql" />
+    <None Include="Scripts\Query All Location.sql" />
+    <None Include="Scripts\Query Location Counts.sql" />
+    <None Include="Scripts\Query Locations Within Distance.sql" />
     <None Include="Database.publish.xml" />
   </ItemGroup>
 </Project>
