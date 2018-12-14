@@ -9,5 +9,6 @@ namespace SFA.POC.Matching.Proximity.Infrastructure.Configuration
 
         public string PostcodeRetrieverBaseUrl { get; set; }
 
+        public string GoogleMapsApiKey { get; set; }
     }
 }

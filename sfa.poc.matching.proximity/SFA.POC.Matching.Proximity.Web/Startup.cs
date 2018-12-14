@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.POC.Matching.Application.Importer;
+using SFA.POC.Matching.Application.Interfaces;
+using SFA.POC.Matching.Data;
 using SFA.POC.Matching.Proximity.Infrastructure.Configuration;
 using SFA.POC.Matching.Proximity.Infrastructure.Services;
 
@@ -35,11 +38,14 @@ namespace SFA.POC.Matching.Proximity.Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<IMatchingConfiguration>(provider => Configuration);
+
+            services.AddTransient<IPostcodeImporter, ExternalPostcodeImporter>();
+            services.AddTransient<ILocationReader, SqlLocationReader>(p => new SqlLocationReader(Configuration.SqlConnectionString));
+            services.AddTransient<ILocationWriter, SqlLocationWriter>(p => new SqlLocationWriter(Configuration.SqlConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

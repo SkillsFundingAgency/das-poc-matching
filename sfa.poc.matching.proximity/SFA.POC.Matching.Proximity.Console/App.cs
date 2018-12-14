@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SFA.POC.Matching.Application.Interfaces;
 using SFA.POC.Matching.Application.Models;
@@ -9,12 +8,12 @@ namespace SFA.POC.Matching.Proximity.Console
 {
     public class App
     {
-        private readonly IPostcodeImporter _postCodeImporter;
+        private readonly IPostcodeImporter _postcodeImporter;
         private readonly ILocationWriter _locationWriter;
 
-        public App(IPostcodeImporter postCodeImporter, ILocationWriter locationWriter)
+        public App(IPostcodeImporter postcodeImporter, ILocationWriter locationWriter)
         {
-            _postCodeImporter = postCodeImporter;
+            _postcodeImporter = postcodeImporter;
             _locationWriter = locationWriter;
         }
 
@@ -91,7 +90,7 @@ namespace SFA.POC.Matching.Proximity.Console
 
         private async Task<IEnumerable<PostcodeModel>> GetPostcode(string postCode)
         {
-            var postCodeResult = await _postCodeImporter.RetrievePostcodeAsync(postCode);
+            var postCodeResult = await _postcodeImporter.RetrievePostcodeAsync(postCode);
             return new List<PostcodeModel> { postCodeResult };
         }
 
@@ -101,7 +100,7 @@ namespace SFA.POC.Matching.Proximity.Console
 
             for (var i = 0; i < numberOfCodesToGenerate; i++)
             {
-                list.Add(await _postCodeImporter.RetrieveRandomPostcodeAsync());
+                list.Add(await _postcodeImporter.RetrieveRandomPostcodeAsync());
             }
 
             return list;

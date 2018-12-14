@@ -13,7 +13,7 @@ namespace SFA.POC.Matching.Data
         {
         }
 
-        public async Task SaveAsync(Location location)
+        public async Task SaveAsync(LocationModel location)
         {
             await WithConnection(async c =>
             {

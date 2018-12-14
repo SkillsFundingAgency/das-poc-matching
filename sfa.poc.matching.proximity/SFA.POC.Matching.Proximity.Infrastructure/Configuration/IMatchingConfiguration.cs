@@ -8,5 +8,7 @@ namespace SFA.POC.Matching.Proximity.Infrastructure.Configuration
         string SqlConnectionString { get; set; }
 
         string PostcodeRetrieverBaseUrl { get; set; }
+
+        string GoogleMapsApiKey { get; set; }
     }
 }

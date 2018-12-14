@@ -147,7 +147,7 @@ namespace SFA.POC.Matching.Application.Importer
             {
                 Console.WriteLine($"Saving {postcode.Postcode} at {postcode.Latitude}, {postcode.Longitude}");
 
-                var location = new Location
+                var location = new LocationModel
                 {
                     Postcode = postcode.Postcode,
                     Longitude = postcode.Longitude.Value,

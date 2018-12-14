@@ -10,7 +10,7 @@ SET @g = geography::Point(52.404079, -1.509867, 4326); --CV1 2HJ
 declare @milesToMetres float = 1609.34;
 
 --Get distances from local post code
-SELECT	[PostCode], 
+SELECT	[Postcode], 
 		[Latitude], 
 		[Longitude],
 		[Location].STDistance(@g) / 1000 AS [Distance (km)],

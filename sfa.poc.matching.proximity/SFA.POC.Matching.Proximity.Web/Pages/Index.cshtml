@@ -9,10 +9,50 @@
 </div>
 
 <div class="row">
-    <div class="col-md-3">
-        <h2>Application uses</h2>
-        <ul>
-            <li>Sample pages using ASP.NET Core Razor Pages</li>
-        </ul>
+    <div class="col-md-12">
+        <h2>Search</h2>
+
+        <form method="post" defaultButton="btnSubmit">
+            <p>
+                <span>
+                    <label asp-for="@Model.LocationSearch.Postcode">Postcode:</label>
+                    <input asp-for="@Model.LocationSearch.Postcode" value="@Model.LocationSearch.Postcode" />
+                </span>
+                <span>
+                    <label asp-for="@Model.LocationSearch.SearchRadius">Within distance:</label>
+                    <input asp-for="@Model.LocationSearch.SearchRadius" value="@Model.LocationSearch.SearchRadius" />
+                </span>
+                <span>
+                    <input id="btnSubmit" class="button" type="submit" value="Search">
+                </span>
+            </p>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <h2>Map</h2>
+    </div>
+    <div class="col-md-7">
+        <h2>Results</h2>
+        <p>
+            @Model.LocationSearch.SearchResults?.Count locations found
+        </p>
+        
+        <table class="table  table-bordered table-striped">
+            @foreach (var searchResult in Model.LocationSearch.SearchResults)
+            {
+                <tr>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">@searchResult.Postcode</h4>
+                            @*<h5 class="card-subtitle mb-2 text-muted">Distance: @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles</h5>*@
+                            <p class="card-text">Result found @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles away in @searchResult.Region, @searchResult.Country. @searchResult.AdminCounty</p>
+                            @*<a href="#" class="card-link">link</a>*@
+                        </div>
+                    </div>
+                </tr>
+            }
+        </table>
     </div>
 </div>

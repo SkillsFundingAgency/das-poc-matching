@@ -65,6 +65,7 @@
   <ItemGroup>
     <Build Include="Tables\Locations.sql" />
     <Build Include="Indexes\IX_Locations_Spatial.sql" />
+    <Build Include="Indexes\IX_Locations_Postcode.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeploy.sql" />
