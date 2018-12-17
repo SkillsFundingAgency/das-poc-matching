@@ -1,7 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SFA.POC.Matching.Application.Interfaces;
+using SFA.POC.Matching.Application.Models;
 using SFA.POC.Matching.Proximity.Infrastructure.Configuration;
 using SFA.POC.Matching.Proximity.Web.ViewModels;
 
@@ -18,11 +24,20 @@ namespace SFA.POC.Matching.Proximity.Web.Pages
         [BindProperty]
         public LocationSearchViewModel LocationSearch { get; set; }
 
+        public bool ShowSearchResults { get; set; }
+
+        public string MapMarkers { get; set; }
+
+        //[BindProperty]
+        public string GoogleMapsApiKey { get; set; }
+
         public IndexModel(IMatchingConfiguration configuration, ILocationReader locationReader, IPostcodeImporter postcodeImporter)
         {
             _configuration = configuration;
             _locationReader = locationReader;
             _postcodeImporter = postcodeImporter;
+
+            GoogleMapsApiKey = configuration.GoogleMapsApiKey;
         }
 
         public void OnGet()
@@ -63,9 +78,33 @@ namespace SFA.POC.Matching.Proximity.Web.Pages
                     postCodeResult.Latitude.Value,
                     postCodeResult.Longitude.Value,
                     searchRadiusInMeters);
+
+                MapMarkers = LoadMap(LocationSearch.SearchResults);
+
+                ShowSearchResults = true;
             }
             
             return Page();
+        }
+
+        private string LoadMap(IList<LocationModel> searchResults)
+        {
+            var markers = new StringBuilder("[");
+
+            foreach (var searchResult in searchResults)
+            {
+                //searchResult.Region = "Here & There";
+                markers.Append("{");
+                markers.Append($"'title': '{searchResult.Postcode}',");
+                markers.Append($"'lat': '{searchResult.Latitude}',");
+                markers.Append($"'lng': '{searchResult.Longitude}',");
+                markers.Append($"'description': '{WebUtility.HtmlEncode(searchResult.Region)}'");
+                //markers.Append($"'description': '{searchResult.Region}'");
+                markers.Append("},");
+            }
+            markers.Append("];");
+
+            return markers.ToString();
         }
     }
 }

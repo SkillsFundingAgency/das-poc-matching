@@ -30,4 +30,5 @@ SELECT	[PostCode],
 FROM [dbo].[Locations] 
 WHERE [Location].STDistance(@g) <= @distance
 --WHERE @g.STDistance([Location]) <= convert(float, 90) --1(60.0 * 8 / 5)
+--AND		[Country] = 'England'
 ORDER BY [Location].STDistance(@g)

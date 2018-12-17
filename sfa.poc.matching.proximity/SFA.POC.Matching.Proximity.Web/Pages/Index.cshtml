@@ -4,6 +4,12 @@
     ViewData["Title"] = "Home page";
 }
 
+<style>
+    #map-container {
+        height: 300px
+    }
+</style>
+
 <div id="myCarousel" class="page-header">
     <h1>Proximity POC</h1>
 </div>
@@ -30,29 +36,74 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-5">
-        <h2>Map</h2>
-    </div>
-    <div class="col-md-7">
-        <h2>Results</h2>
-        <p>
-            @Model.LocationSearch.SearchResults?.Count locations found
-        </p>
-        
-        <table class="table  table-bordered table-striped">
-            @foreach (var searchResult in Model.LocationSearch.SearchResults)
-            {
-                <tr>
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">@searchResult.Postcode</h4>
-                            @*<h5 class="card-subtitle mb-2 text-muted">Distance: @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles</h5>*@
-                            <p class="card-text">Result found @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles away in @searchResult.Region, @searchResult.Country. @searchResult.AdminCounty</p>
-                            @*<a href="#" class="card-link">link</a>*@
+    <h2>Results</h2>
+    <p>
+        @Model.LocationSearch.SearchResults?.Count locations found
+    </p>
+</div>
+
+<div class="row">
+    @if (Model.ShowSearchResults)
+    {
+        <div class="col-md-5">
+            <table class="table  table-bordered table-striped">
+                @foreach (var searchResult in Model.LocationSearch.SearchResults)
+                {
+                    <tr>
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">@searchResult.Postcode</h4>
+                                @*<h5 class="card-subtitle mb-2 text-muted">Distance: @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles</h5>*@
+                                <p class="card-text">Result found @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles away in @searchResult.Region, @searchResult.Country. @searchResult.AdminCounty</p>
+                                @*<a href="#" class="card-link">link</a>*@
+                            </div>
                         </div>
-                    </div>
-                </tr>
+                    </tr>
+                }
+            </table>
+        </div>
+
+        <div class="col-md-5">
+            <div id="dvMap" class="map-container" />
+        </div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@Model.GoogleMapsApiKey"></script>
+        @*<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHVfWFkKx_srzWC4gEn0IAxrCKInI7N70&callback=initMap" type="text/javascript"></script>*@
+        <script type="text/javascript">
+
+            window.onload = function() {
+                var markers = @Html.Raw(Model.MapMarkers);
+
+                var mapOptions = {
+                    center: new google.maps.LatLng(markers[0].lat, markers[0].lng),
+                    zoom: 8,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var infoWindow = new google.maps.InfoWindow();
+
+                var mapDiv = document.getElementById("dvMap");
+                if (mapDiv !== null) {
+                    var map = new google.maps.Map(mapDiv, mapOptions);
+
+                    for (i = 0; i < markers.length; i++) {
+                        var data = markers[i]
+                        var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+                        var marker = new google.maps.Marker({
+                            position: myLatlng,
+                            map: map,
+                            title: data.title
+                        });
+                        (function(marker, data) {
+                            google.maps.event.addListener(marker,
+                                "click",
+                                function(e) {
+                                    infoWindow.setContent(data.description);
+                                    infoWindow.open(map, marker);
+                                });
+                        })(marker, data);
+                    }
+                }
             }
-        </table>
-    </div>
+        </script>
+    }
 </div>

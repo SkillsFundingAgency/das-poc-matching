@@ -35,3 +35,8 @@ body {
         display: none;
     }
 }
+
+/* Custom styles */
+.map-container {
+    height: 320px;
+}
