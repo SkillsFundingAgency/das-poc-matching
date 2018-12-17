@@ -93,13 +93,18 @@ namespace SFA.POC.Matching.Proximity.Web.Pages
 
             foreach (var searchResult in searchResults)
             {
-                //searchResult.Region = "Here & There";
                 markers.Append("{");
                 markers.Append($"'title': '{searchResult.Postcode}',");
                 markers.Append($"'lat': '{searchResult.Latitude}',");
                 markers.Append($"'lng': '{searchResult.Longitude}',");
-                markers.Append($"'description': '{WebUtility.HtmlEncode(searchResult.Region)}'");
-                //markers.Append($"'description': '{searchResult.Region}'");
+
+                markers.Append($"'description': '{searchResult.Postcode}");
+                if (!String.IsNullOrEmpty(searchResult.Region))
+                {
+                    markers.Append($" {WebUtility.HtmlEncode(searchResult.Region)}");
+                }
+                markers.Append("'");
+
                 markers.Append("},");
             }
             markers.Append("];");

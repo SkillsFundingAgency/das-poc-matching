@@ -38,5 +38,6 @@ body {
 
 /* Custom styles */
 .map-container {
-    height: 320px;
+    height: 330px;
+    width: 330px;
 }
