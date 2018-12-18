@@ -85,7 +85,6 @@ namespace SFA.POC.Matching.Proximity.Console
             } while (true);
 
             System.Console.WriteLine("Done ...");
-            //System.Console.ReadKey();
         }
 
         private async Task<IEnumerable<PostcodeModel>> GetPostcode(string postCode)

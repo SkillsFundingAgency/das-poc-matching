@@ -2,7 +2,7 @@
 
 POC to investigate options for postcode lookup, proximity searching and distance calculation.
 
-Uses the same table configuration as the [Configuration Sample](..\sfa.poc.matching.configuration\README.md).
+Uses the same table configuration as the [Configuration Sample](../sfa.poc.matching.configuration/README.md).
 
 The following needs to be in the config json (with appropriate connection strings):
 ```
