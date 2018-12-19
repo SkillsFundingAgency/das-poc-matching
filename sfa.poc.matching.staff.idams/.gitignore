@@ -1,0 +1,9 @@
+## Specific ignores for database project
+
+# Ignore file with production settings
+appsettings.Production.json
+
+# Ignore publish settings files
+*/Properties/PublishProfiles/
+
+
