@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using sfa.poc.matching.staff.idams.Models;
 
@@ -14,10 +16,21 @@ namespace sfa.poc.matching.staff.idams.Controllers
         {
             return View();
         }
-        
+
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public IActionResult Login()
+        {
+            return RedirectToAction("Index");
+        }
+
+        public async Task Signout()
+        {
+            await HttpContext.SignOutAsync();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

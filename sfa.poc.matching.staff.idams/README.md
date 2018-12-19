@@ -17,8 +17,30 @@ The following needs to be in the configuration table:
 {
   "Authentication":
   {
-    "WtRealm":"unknown",
-    "MetaDataEndpoint": "unknown"
+    "WtRealm":"<replace with the application identifier>",
+    "MetaDataEndpoint": "<replace with meta data endpoint url>"
+  }
+}
+```
+
+In the PoC ``WtRealm` was set to be the same as the https endpoint of the application, found in sfa.poc.matching.staff.idams\Properties\launchSettings.json 
+
+# Notes from Recruit POC: 
+
+## Provider & Staff
+
+Relying parties are managed by Core DevOps team. Change requests are needed for changes to both the PreProd and the Prod environments. They'll need the following info:
+* An application Identifier (can be any string)
+* Url of the application (**must** use https)
+
+
+Update the following `appSettings.json` values:
+
+```json
+{
+  "Authentication": {
+    "WtRealm": "<replace with the application identifier>",
+    "MetaDataEndpoint": "<replace with meta data endpoint url>"
   }
 }
 ```
