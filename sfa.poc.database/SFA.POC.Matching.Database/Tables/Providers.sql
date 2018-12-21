@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[Providers]
+(
+	[Id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Name] NVARCHAR(512) NOT NULL
+)
