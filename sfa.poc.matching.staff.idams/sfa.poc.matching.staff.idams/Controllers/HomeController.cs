@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Mvc;
 using sfa.poc.matching.staff.idams.Models;
 
@@ -13,6 +14,12 @@ namespace sfa.poc.matching.staff.idams.Controllers
     public class HomeController : Controller
     {
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult About()
         {
             return View();
         }
@@ -30,7 +37,12 @@ namespace sfa.poc.matching.staff.idams.Controllers
 
         public async Task Signout()
         {
-            await HttpContext.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(WsFederationDefaults.AuthenticationScheme, 
+                new AuthenticationProperties
+                {
+                    RedirectUri = "/"
+                });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

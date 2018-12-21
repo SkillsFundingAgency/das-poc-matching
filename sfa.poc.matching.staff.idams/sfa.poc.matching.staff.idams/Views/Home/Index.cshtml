@@ -45,7 +45,27 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8">
-        <h2>Hello IDAMS World</h2>
+@if (Context.User.Identity.IsAuthenticated)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Users Claims:</h1>
+            <table>
+                @foreach (var claim in Context.User.Claims)
+                {
+                    <tr>
+                        <td>@claim.Type</td>
+                        <td><strong>@claim.Value</strong></td>
+                    </tr>
+                }
+            </table>
+        </div>
     </div>
+}
+else
+{
+    <div class="col-md-8">
+        <h2>You are not authenticated - please log in</h2>
+    </div>
+}
 </div>

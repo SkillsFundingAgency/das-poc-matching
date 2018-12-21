@@ -33,10 +33,9 @@ namespace sfa.poc.matching.staff.idams
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false; //true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
 
             services.AddMvc(config =>
                 {
@@ -88,6 +87,8 @@ namespace sfa.poc.matching.staff.idams
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication(); // TODO: WP - Add the authentication middleware into the pipeline
 
             app.UseMvc(routes =>
             {
