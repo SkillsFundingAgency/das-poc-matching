@@ -16,8 +16,4 @@
     <ProjectReference Include="..\SFA.POC.Matching.Proximity.Infrastructure\SFA.POC.Matching.Proximity.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
