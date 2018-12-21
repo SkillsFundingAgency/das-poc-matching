@@ -1,0 +1,30 @@
+﻿@model EmailViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="page-header">
+    <h1>Notifications POC</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Send Mail</h2>
+        <form method="post" defaultButton="btnSubmit">
+            <p>
+                <span>
+                    <label asp-for="@Model.EmailTo">Mail to:</label>
+                    <input asp-for="@Model.EmailTo" value="@Model.EmailTo" />
+                </span>
+                <span>
+                    <label asp-for="@Model.Template">Template name:</label>
+                    <input asp-for="@Model.Template" value="@Model.Template" />
+                </span>
+                <span>
+                    <input id="btnSubmit" class="button" type="submit" value="Send">
+                </span>
+            </p>
+        </form>
+    </div>
+</div>
