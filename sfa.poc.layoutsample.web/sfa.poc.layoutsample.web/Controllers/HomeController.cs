@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sfa.poc.layoutsample.web.Models;
+using sfa.poc.layoutsample.web.ViewModels;
 
 namespace sfa.poc.layoutsample.web.Controllers
 {
@@ -15,26 +13,35 @@ namespace sfa.poc.layoutsample.web.Controllers
             return View();
         }
 
-        public IActionResult About()
+        [AllowAnonymous]
+        public IActionResult ContactUs()
         {
-            ViewData["Message"] = "Your application description page.";
-
             return View();
         }
 
-        public IActionResult Contact()
+        [AllowAnonymous]
+        public IActionResult Cookies()
         {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return RedirectToAction("Index");
+        }
+
+        public async Task Signout()
+        {
+        }
+
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

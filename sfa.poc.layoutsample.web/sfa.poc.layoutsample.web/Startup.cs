@@ -1,26 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace sfa.poc.layoutsample.web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         public IConfiguration Configuration { get; }
 
+        public ILogger<Startup> Logger { get; }
+
+        //public IHostingEnvironment HostingEnvironment;
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger) //, IHostingEnvironment hostingEnvironment
+        {
+            Configuration = configuration;
+            Logger = logger;
+            //HostingEnvironment = hostingEnvironment;
+        }
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -31,6 +33,8 @@ namespace sfa.poc.layoutsample.web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddTransient<IConfiguration>(provider => Configuration);
+            services.AddTransient<ILogger>(provider => Logger);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
