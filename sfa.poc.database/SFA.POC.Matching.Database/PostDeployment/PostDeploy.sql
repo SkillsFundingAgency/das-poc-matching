@@ -10,4 +10,28 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
+--Create roles
+--Data Analyst - Read all views excluding HMRC
+IF DATABASE_PRINCIPAL_ID('DataAnalyst') IS NULL
+BEGIN
+	CREATE ROLE [DataAnalyst]
+END
 
+
+--Grant permissions on views to roles
+GRANT SELECT ON [dbo].[LocationsView] TO [DataAnalyst]
+GRANT SELECT ON [dbo].[ProvideCoursesWithLEPsView] TO [DataAnalyst]
+
+
+--Set up initial data
+:r ".\Seed Courses.sql"
+:r ".\Seed Providers.sql"
+:r ".\Seed LocalEnterprisePartnerships.sql"
+:r ".\Seed District Mapping.sql"
+:r ".\Seed Locations.sql"
+
+--Ceate random mapping
+:r ".\Randomly Seed ProviderCourseLocations.sql"
+
+--Set up email templates
+:r ".\Create Email Templates.sql"

@@ -31,6 +31,7 @@ namespace SFA.POC.Matching.Data
                                     [Country],
                                     [Region],
                                     [AdminDistrict],
+                                    [AdminDistrictCode],
                                     [AdminCounty])
                               VALUES (
                                     @Postcode, 
@@ -40,6 +41,7 @@ namespace SFA.POC.Matching.Data
                                     @Country,
                                     @Region,
                                     @AdminDistrict,
+                                    @AdminDistrictCode,
                                     @AdminCounty)",
                             location,
                             commandType: CommandType.Text,

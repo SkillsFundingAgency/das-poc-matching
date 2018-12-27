@@ -4,5 +4,4 @@
 	[ProviderId] [BIGINT] NOT NULL,
 	[CourseId] [BIGINT] NOT NULL,
 	[LocationId] [BIGINT] NOT NULL
-
 )

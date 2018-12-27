@@ -27,7 +27,7 @@ namespace SFA.POC.Matching.Proximity.Console
                 {
                     IEnumerable<PostcodeModel> postcodes = null;
 
-                    System.Console.WriteLine("Enter a post code, \"r\" followed by a number of random post codes to generate, or q to exit.");
+                    System.Console.WriteLine("Enter a post code, \"/r\" followed by a number of random post codes to generate, or q to exit.");
                     var input = System.Console.ReadLine();
                     if (input.StartsWith('q') || input.StartsWith('Q'))
                     {
@@ -69,7 +69,8 @@ namespace SFA.POC.Matching.Proximity.Console
                                     Country = postcode.Country,
                                     Region = postcode.Region,
                                     AdminCounty = postcode.Admin_County,
-                                    AdminDistrict = postcode.Admin_District
+                                    AdminDistrict = postcode.Admin_District,
+                                    AdminDistrictCode = postcode.Codes.Admin_District
                                 };
                                 await _locationWriter.SaveAsync(location);
                             }
@@ -81,7 +82,6 @@ namespace SFA.POC.Matching.Proximity.Console
                 {
                     System.Console.WriteLine(e);
                 }
-
             } while (true);
 
             System.Console.WriteLine("Done ...");

@@ -61,11 +61,27 @@
     <Folder Include="PostDeployment" />
     <Folder Include="Scripts" />
     <Folder Include="Indexes" />
+    <Folder Include="PreDeployment" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Locations.sql" />
     <Build Include="Indexes\IX_Locations_Spatial.sql" />
     <Build Include="Indexes\IX_Locations_Postcode.sql" />
+    <Build Include="Tables\Courses.sql" />
+    <Build Include="Tables\Providers.sql" />
+    <Build Include="Tables\ProviderCourseLocations.sql" />
+    <None Include="PostDeployment\Seed LocalEnterprisePartnerships.sql" />
+    <None Include="PostDeployment\Seed Courses.sql" />
+    <Build Include="Tables\LocalEnterprisePartnerships.sql" />
+    <Build Include="Tables\LocalEnterprisePartnershipDistricts.sql" />
+    <None Include="PostDeployment\Seed Providers.sql" />
+    <None Include="PostDeployment\Seed Locations.sql" />
+    <Build Include="Indexes\IX_LocalEnterprisePartnershipDistricts_AdminDistrictCode.sql" />
+    <None Include="Scripts\Query Courses With LEPs.sql" />
+    <Build Include="Views\LocationsView.sql" />
+    <Build Include="Views\ProvideCoursesWithLEPsView.sql" />
+    <Build Include="Tables\EmailTemplates.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeploy.sql" />
@@ -75,5 +91,11 @@
     <None Include="Scripts\Query Location Counts.sql" />
     <None Include="Scripts\Query Locations Within Distance.sql" />
     <None Include="Database.publish.xml" />
+    <None Include="PostDeployment\Seed District Mapping.sql" />
+    <None Include="Scripts\Randomise Courses.sql" />
+    <None Include="PostDeployment\Create Email Templates.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="PreDeployment\PreDeploy.sql" />
   </ItemGroup>
 </Project>

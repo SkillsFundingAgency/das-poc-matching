@@ -155,7 +155,8 @@ namespace SFA.POC.Matching.Application.Importer
                     Country = postcode.Country,
                     Region = postcode.Region,
                     AdminCounty = postcode.Admin_County,
-                    AdminDistrict = postcode.Admin_District
+                    AdminDistrict = postcode.Admin_District,
+                    AdminDistrictCode = postcode.Codes.Admin_District
                 };
                 await _locationWriter.SaveAsync(location);
             }
