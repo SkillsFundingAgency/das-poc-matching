@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using sfa.poc.matching.notifications.Configuration;
+using Microsoft.Extensions.Logging;
+using sfa.poc.matching.notifications.Application.Data;
+using sfa.poc.matching.notifications.Application.Interfaces;
+using sfa.poc.matching.notifications.Application.Services;
+using sfa.poc.matching.notifications.Application.Configuration;
 using sfa.poc.matching.notifications.Services;
 using SFA.DAS.Notifications.Api.Client.Configuration;
 
@@ -13,13 +17,20 @@ namespace sfa.poc.matching.notifications
     public class Startup
     {
         public IMatchingConfiguration Configuration { get; set; }
+        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
+            _logger = logger;
+
+            _logger.LogInformation("In startup constructor.  Before GetConfig");
+
             Configuration = ConfigurationService.GetConfig(configuration["EnvironmentName"],
                 configuration["ConfigurationStorageConnectionString"],
                 configuration["Version"],
                 configuration["ServiceName"]).Result;
+
+            _logger.LogInformation("In startup constructor.  After GetConfig");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -32,11 +43,14 @@ namespace sfa.poc.matching.notifications
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<IMatchingConfiguration>(provider => Configuration);
-            services.AddTransient<NotificationsApiClientConfiguration>(provider => Configuration.NotificationsApiClient);
+            services.AddTransient<NotificationsApiClientConfiguration>(provider => Configuration.NotificationsApiClientConfiguration);
+
+            services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
+            services.AddTransient<IEmailService, EmailService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

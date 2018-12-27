@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using sfa.poc.matching.notifications.Models;
+using sfa.poc.matching.notifications.Application.Constants;
+using sfa.poc.matching.notifications.Application.Interfaces;
 using sfa.poc.matching.notifications.ViewModels;
 using SFA.DAS.Notifications.Api.Client.Configuration;
 
@@ -9,16 +10,35 @@ namespace sfa.poc.matching.notifications.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(NotificationsApiClientConfiguration notificationsApiClientConfig)
+        private readonly IEmailService _emailService;
+
+        public HomeController(IEmailService emailService)
         {
-            return View(new EmailViewModel());
+            _emailService = emailService;
+        }
+
+        public IActionResult Index()
+        {
+            return View(new EmailViewModel
+            {
+                Template = EmailTemplateName.APPLY_SIGNUP_ERROR,
+                Tokens = "Contact Name",
+            });
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(EmailViewModel email)
         {
             if(ModelState.IsValid) {
-                //TODO: Use API to send the message
+
+                await _emailService.SendEmail(
+                    !string.IsNullOrWhiteSpace(email.Template)
+                        ? email.Template
+                        : EmailTemplateName.APPLY_SIGNUP_ERROR, 
+                    email.EmailTo,
+                    //new { contactname = $"{existingContact.GivenNames} {existingContact.FamilyName}" },
+                    new { contactname = email.Tokens },
+                    email.ReplyTo);
 
                 return View(email);
             }

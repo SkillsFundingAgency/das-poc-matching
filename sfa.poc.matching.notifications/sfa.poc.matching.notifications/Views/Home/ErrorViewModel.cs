@@ -1,6 +1,6 @@
 using System;
 
-namespace sfa.poc.matching.notifications.Models
+namespace sfa.poc.matching.notifications.ViewModels
 {
     public class ErrorViewModel
     {

@@ -17,10 +17,26 @@
                     <label asp-for="@Model.EmailTo">Mail to:</label>
                     <input asp-for="@Model.EmailTo" value="@Model.EmailTo" />
                 </span>
+            </p>
+            <p>
+                <span>
+                    <label asp-for="@Model.ReplyTo">Reply to:</label>
+                    <input asp-for="@Model.ReplyTo" value="@Model.ReplyTo" />
+                </span>
+            </p>
+            <p>
+                <span>
+                    <label asp-for="@Model.Tokens">Tokens:</label>
+                    <input asp-for="@Model.Tokens" value="@Model.Tokens" />
+                </span>
+            </p>
+            <p>
                 <span>
                     <label asp-for="@Model.Template">Template name:</label>
                     <input asp-for="@Model.Template" value="@Model.Template" />
                 </span>
+            </p>
+            <p>
                 <span>
                     <input id="btnSubmit" class="button" type="submit" value="Send">
                 </span>

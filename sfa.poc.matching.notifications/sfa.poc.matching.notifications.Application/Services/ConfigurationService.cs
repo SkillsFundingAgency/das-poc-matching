@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
-using sfa.poc.matching.notifications.Configuration;
+using sfa.poc.matching.notifications.Application.Configuration;
+using sfa.poc.matching.notifications.Application.Interfaces;
 
 namespace sfa.poc.matching.notifications.Services
 {
