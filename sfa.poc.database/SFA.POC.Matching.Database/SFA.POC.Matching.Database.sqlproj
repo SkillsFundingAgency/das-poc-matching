@@ -94,6 +94,7 @@
     <None Include="PostDeployment\Seed District Mapping.sql" />
     <None Include="Scripts\Randomise Courses.sql" />
     <None Include="PostDeployment\Create Email Templates.sql" />
+    <None Include="PostDeployment\Randomly Seed ProviderCourseLocations.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeployment\PreDeploy.sql" />

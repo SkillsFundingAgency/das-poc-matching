@@ -3,7 +3,7 @@ namespace sfa.poc.matching.search.azure.application.Configuration
 {
     public interface ISearchConfiguration
     {
-        string AzureSearchConnectionString { get; set; }
+        AzureSearchConfiguration AzureSearchConfiguration { get; set; }
 
         string SqlConnectionString { get; set; }
     }

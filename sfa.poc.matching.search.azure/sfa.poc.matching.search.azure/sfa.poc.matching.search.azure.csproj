@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\sfa.poc.matching.search.azure.application\sfa.poc.matching.search.azure.application.csproj" />
+    <ProjectReference Include="..\sfa.poc.matching.search.azure.data\sfa.poc.matching.search.azure.data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
