@@ -1,0 +1,5 @@
+{
+  "extensions":[
+    { "name": "Startup", "typeName":"sfa.poc.matching.functions.Startup, sfa.poc.matching.functions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"}
+  ]
+}

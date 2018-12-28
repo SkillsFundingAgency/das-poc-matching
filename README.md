@@ -52,3 +52,6 @@ POC to investigate Azure Search.
 
 [Proximity](sfa.poc.matching.search.azure\README.md)
 
+### Functions POC ###
+
+[Functions](sfa.poc.matching.functions\README.md)
