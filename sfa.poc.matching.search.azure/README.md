@@ -16,6 +16,15 @@ The following needs to be in the configuration table:
 ```
 {
   "SqlConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=SFA.POC.Matching.Database;Integrated Security=True;MultipleActiveResultSets=True;",
-  "AzureSearchConnectionString": "TODO"
-}
+  "AzureSearchConfiguration":
+  {
+    "SearchServiceName": "Put your search service name here",
+    "SearchServiceAdminApiKey": "Put your primary or secondary API key here",
+    "SearchServiceQueryApiKey": "Put your query API key here"
+  }
+},
+
 ```
+
+The search uri is `https://matchingpoc.search.windows.net`
+

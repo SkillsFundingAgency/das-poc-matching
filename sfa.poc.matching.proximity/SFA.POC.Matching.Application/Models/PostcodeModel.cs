@@ -1,5 +1,5 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Dynamic;
 
 namespace SFA.POC.Matching.Application.Models
 {
@@ -24,6 +24,28 @@ namespace SFA.POC.Matching.Application.Models
 
         public string Admin_County { get; set; }
 
+        public Codes Codes { get; set; }
+
         private string DebuggerDisplay => $"PostcodeModel: { Postcode} ({ Longitude}, { Latitude})";
     }
+
+    public class Codes
+    {
+        public string Admin_District { get; set; }
+
+        public string Admin_County { get; set; }
+
+        public string Admin_Ward { get; set; }
+
+        public string Parish { get; set; }
+
+        public string Parliamentary_Constituency { get; set; }
+
+        public string Ccg { get; set; }
+
+        public string Ced { get; set; }
+
+        public string Nuts { get; set; }
+    }
+
 }

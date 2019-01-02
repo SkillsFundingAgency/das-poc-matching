@@ -19,6 +19,8 @@ namespace SFA.POC.Matching.Application.Models
 
         public string AdminDistrict { get; set; }
 
+        public string AdminDistrictCode { get; set; }
+        
         public string AdminCounty { get; set; }
 
         private string DebuggerDisplay => $"LocationModel: { Postcode} ({Longitude}, { Latitude})";

@@ -56,9 +56,9 @@ namespace SFA.POC.Matching.Proximity.Web.Pages
 
         public async Task<IActionResult> OnPost()
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                //MathsCalc.Result = MathsCalc.FirstNumber + MathsCalc.SecondNumber;
+                //Process error
             }
 
             //Lookup postcode to get lat long

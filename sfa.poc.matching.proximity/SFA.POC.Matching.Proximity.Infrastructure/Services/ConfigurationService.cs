@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
@@ -12,8 +11,6 @@ namespace SFA.POC.Matching.Proximity.Infrastructure.Services
         public static async Task<IMatchingConfiguration> GetConfig(string environment, string storageConnectionString,
             string version, string serviceName)
         {
-            Console.WriteLine($"Getting configuration for {environment} {serviceName} {version}");
-
             var conn = CloudStorageAccount.Parse(storageConnectionString);
             var tableClient = conn.CreateCloudTableClient();
             var table = tableClient.GetTableReference("Configuration");

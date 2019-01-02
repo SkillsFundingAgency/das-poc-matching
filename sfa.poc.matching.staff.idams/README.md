@@ -44,3 +44,11 @@ Update the following `appSettings.json` values:
   }
 }
 ```
+
+
+##Questions
+
+this: app.UseAuthentication(); // TODO: WP - Add the authentication middleware into the pipeline
+
+Do we need this - if so should be coming from config
+Program.cs - .UseUrls("https://localhost:5025");
