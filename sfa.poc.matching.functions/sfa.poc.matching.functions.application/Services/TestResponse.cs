@@ -1,5 +1,5 @@
 ﻿
-namespace sfa.poc.matching.functions
+namespace sfa.poc.matching.functions.application.Services
 {
     public class TestResponse
     {
@@ -10,5 +10,7 @@ namespace sfa.poc.matching.functions
         public string ServiceName { get; set; }
 
         public string Version { get; set; }
+
+        public string AdditionalData { get; set; }
     }
 }

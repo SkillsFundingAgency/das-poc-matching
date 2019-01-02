@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Azure.WebJobs.Description;
 
 namespace sfa.poc.matching.functions.extensions
 {
-    public class InjectAttribute
+    [Binding]
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class InjectAttribute : Attribute
     {
     }
 }

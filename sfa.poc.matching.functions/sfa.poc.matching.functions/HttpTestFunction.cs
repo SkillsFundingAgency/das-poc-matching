@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters.Internal;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using sfa.poc.matching.functions.application.Services;
+using sfa.poc.matching.functions.extensions;
 
 namespace sfa.poc.matching.functions
 {
@@ -16,20 +18,14 @@ namespace sfa.poc.matching.functions
         [FunctionName("HttpTestFunction")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [Inject]ITestService testService,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
+            
+            var response = testService.GetMessage();
 
-            string name = req.Query["name"];
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            return name != null
-                //? (ActionResult)new OkObjectResult($"Hello, {name}")
-                ? (ActionResult)new JsonResult(new TestResponse{ Message = name })
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            return (ActionResult) new JsonResult(response);
         }
     }
 }
