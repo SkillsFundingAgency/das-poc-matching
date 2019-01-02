@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using sfa.poc.matching.notifications.Application.Constants;
 using sfa.poc.matching.notifications.Application.Interfaces;
 using sfa.poc.matching.notifications.ViewModels;
-using SFA.DAS.Notifications.Api.Client.Configuration;
 
 namespace sfa.poc.matching.notifications.Controllers
 {
@@ -21,7 +20,7 @@ namespace sfa.poc.matching.notifications.Controllers
         {
             return View(new EmailViewModel
             {
-                Template = EmailTemplateName.APPLY_SIGNUP_ERROR,
+                Template = EmailTemplateName.CANDIDATE_CONTACT_US,
                 Tokens = "Contact Name",
             });
         }
@@ -29,15 +28,36 @@ namespace sfa.poc.matching.notifications.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(EmailViewModel email)
         {
-            if(ModelState.IsValid) {
+            if(ModelState.IsValid)
+            {
+                var template = !string.IsNullOrWhiteSpace(email.Template)
+                    ? email.Template
+                    : EmailTemplateName.CANDIDATE_CONTACT_US;
+
+                //var tokens = new { contactname = email.Tokens };
+                //var customFields = new 
+                //{
+                //    UserEmailAddress = email.ReplyTo,
+                //    UserFullName = "Test User",
+                //    UserEnquiry = "I have a question",
+                //    UserEnquiryDetails = "Wanted to have different appSettings for debug and release when building your app ? "
+                //};
+
+                var tokens = template == EmailTemplateName.CANDIDATE_CONTACT_US
+                    ? (dynamic)new
+                        {
+                            UserEmailAddress = email.ReplyTo,
+                            UserFullName = "Test User",
+                            UserEnquiry = "I have a question",
+                            UserEnquiryDetails = "Wanted to have different appSettings for debug and release when building your app ? "
+                        }
+                    : new { contactname = email.Tokens };
 
                 await _emailService.SendEmail(
-                    !string.IsNullOrWhiteSpace(email.Template)
-                        ? email.Template
-                        : EmailTemplateName.APPLY_SIGNUP_ERROR, 
+                    template, 
                     email.EmailTo,
-                    //new { contactname = $"{existingContact.GivenNames} {existingContact.FamilyName}" },
-                    new { contactname = email.Tokens },
+                    //template == EmailTemplateName.CANDIDATE_CONTACT_US ? (dynamic)customFields : tokens,
+                    tokens,
                     email.ReplyTo);
 
                 return View(email);

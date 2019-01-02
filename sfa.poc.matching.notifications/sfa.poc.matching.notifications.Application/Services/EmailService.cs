@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using sfa.poc.matching.notifications.Application.Interfaces;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
-using SFA.DAS.Notifications;
 using SFA.DAS.Notifications.Api.Client;
-using SFA.DAS.Notifications.Api.Client.Configuration;
 using NotificationsApiClientConfiguration = SFA.DAS.Notifications.Api.Client.Configuration.NotificationsApiClientConfiguration;
 
 namespace sfa.poc.matching.notifications.Application.Services
@@ -24,7 +21,7 @@ namespace sfa.poc.matching.notifications.Application.Services
 
         private readonly ILogger<EmailService> _logger;
         //private readonly IConfigurationService _configurationService;
-        private IMatchingConfiguration _configuration;
+        private readonly IMatchingConfiguration _configuration;
         private readonly INotificationsApi _notificationsApi;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
 
@@ -100,19 +97,6 @@ namespace sfa.poc.matching.notifications.Application.Services
 
         private INotificationsApi SetupNotificationApi()
         {
-            // Note: This is placed here as the types used pollute the DI setup.
-            // Also there wasn't any nice way to create this as an StructureMap Registry
-            //var config = _configurationService.GetConfig().GetAwaiter().GetResult();
-
-            //var apiConfiguration = new NotificationsApiClientConfiguration
-            //{
-            //    ApiBaseUrl = config.NotificationsApiClientConfiguration.ApiBaseUrl,
-            //    ClientToken = config.NotificationsApiClientConfiguration.ClientToken,
-            //    ClientId = config.NotificationsApiClientConfiguration.ClientId,
-            //    ClientSecret = config.NotificationsApiClientConfiguration.ClientSecret,
-            //    IdentifierUri = config.NotificationsApiClientConfiguration.IdentifierUri,
-            //    Tenant = config.NotificationsApiClientConfiguration.Tenant
-            //};
             var apiConfiguration = _configuration.NotificationsApiClientConfiguration;
 
             var httpClient = string.IsNullOrWhiteSpace(apiConfiguration.ClientId)

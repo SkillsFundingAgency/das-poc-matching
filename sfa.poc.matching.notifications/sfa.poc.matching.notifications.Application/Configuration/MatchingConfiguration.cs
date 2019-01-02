@@ -8,5 +8,11 @@ namespace sfa.poc.matching.notifications.Application.Configuration
         public NotificationsApiClientConfiguration NotificationsApiClientConfiguration { get; set; }
 
         public string SqlConnectionString { get; set; }
+
+        public string DefaultEmailAddress { get; set; }
+
+        public string DefaultEmailSenderAddress { get; set; }
+
+        public string DefaultEmailReplyToAddress { get; set; }
     }
 }

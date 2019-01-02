@@ -7,5 +7,7 @@ namespace sfa.poc.matching.notifications.Application.Constants
         /// Requires tokens: { contactname }
         /// </summary>
         public const string APPLY_SIGNUP_ERROR = "ApplySignupError";
+
+        public const string CANDIDATE_CONTACT_US = "VacancyService_CandidateContactUsMessage";
     }
 }
