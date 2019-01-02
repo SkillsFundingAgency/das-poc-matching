@@ -1,0 +1,24 @@
+﻿@page
+@model Upload
+
+@{
+    ViewData["Title"] = "Upload";
+}
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <div class="col-md-10">
+            <p>Upload files:</p>
+            <input type="file" name="files" multiple />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Upload" asp-page-handler="UploadFiles" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <p>@Model.Message</p>
+        </div>
+    </div>
+</form>
