@@ -27,5 +27,16 @@ namespace sfa.poc.matching.functions
 
             return (ActionResult) new JsonResult(response);
         }
+
+        [FunctionName("HttpHelloFunction")]
+        public static async Task<IActionResult> RunHello(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            return (ActionResult) new JsonResult("{ 'Hello': 'World' }");
+    }
     }
 }
