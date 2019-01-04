@@ -29,6 +29,7 @@ GRANT SELECT ON [dbo].[ProvideCoursesWithLEPsView] TO [DataAnalyst]
 :r ".\Seed LocalEnterprisePartnerships.sql"
 :r ".\Seed District Mapping.sql"
 :r ".\Seed Locations.sql"
+:r ".\Seed Routes and Pathways.sql"
 
 --Ceate random mapping
 :r ".\Randomly Seed ProviderCourseLocations.sql"

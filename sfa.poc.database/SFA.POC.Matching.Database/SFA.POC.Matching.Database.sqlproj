@@ -82,6 +82,8 @@
     <Build Include="Views\LocationsView.sql" />
     <Build Include="Views\ProvideCoursesWithLEPsView.sql" />
     <Build Include="Tables\EmailTemplates.sql" />
+    <Build Include="Tables\Routes.sql" />
+    <Build Include="Tables\Pathways.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeploy.sql" />
@@ -95,6 +97,7 @@
     <None Include="Scripts\Randomise Courses.sql" />
     <None Include="PostDeployment\Create Email Templates.sql" />
     <None Include="PostDeployment\Randomly Seed ProviderCourseLocations.sql" />
+    <None Include="PostDeployment\Seed Routes and Pathways.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeployment\PreDeploy.sql" />
