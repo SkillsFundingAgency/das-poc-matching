@@ -32,7 +32,7 @@ POC to investigate options for postcode lookup, proximity searching and distance
 
 POC to see how to implement staff IDAMS.
 
-[Proximity](sfa.poc.matching.staffidams\README.md)
+[Staff IDAMS](sfa.poc.matching.staff,idams\README.md)
 
 ### Notifications POC ###
 
