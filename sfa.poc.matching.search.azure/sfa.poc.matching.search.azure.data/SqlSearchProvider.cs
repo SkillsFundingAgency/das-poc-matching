@@ -13,7 +13,7 @@ namespace sfa.poc.matching.search.azure.data
         {
         }
 
-        public async Task<IEnumerable<Course>> FindCourses(IEnumerable<string> keywords)
+        public async Task<IEnumerable<Course>> FindCourses(string searchText)
         {
             throw new NotImplementedException();
 
@@ -38,13 +38,17 @@ namespace sfa.poc.matching.search.azure.data
 		                OR a.[Description] LIKE '%' + @searchWord2 + '%'
                  )
                 ORDER BY a.Id
-
              */
         }
 
-        public async Task<IEnumerable<Location>> FindLocations(IEnumerable<string> keywords)
+        public async Task<IEnumerable<Location>> FindLocations(decimal latitude, decimal longitude, decimal distance)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task RebuildIndexes()
+        {
+            return;
         }
     }
 }

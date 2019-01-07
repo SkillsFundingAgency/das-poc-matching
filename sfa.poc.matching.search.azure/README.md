@@ -28,3 +28,7 @@ The following needs to be in the configuration table:
 
 The search uri is `https://matchingpoc.search.windows.net`
 
+## Things to look at
+
+[https://docs.microsoft.com/en-us/azure/search/search-synonyms-tutorial-sdk](Synonyms)
+

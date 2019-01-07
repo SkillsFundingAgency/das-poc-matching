@@ -8,6 +8,8 @@ namespace sfa.poc.matching.search.azure.application.Interfaces
     {
         Task Index();
 
-        Task<IEnumerable<Course>> Search(string searchText);
+        Task<IEnumerable<Course>> SearchCourses(string searchText);
+
+        Task<IEnumerable<Location>> SearchLocations(decimal latitude, decimal longitude, decimal distance);
     }
 }

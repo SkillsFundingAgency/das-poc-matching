@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.Spatial;
 
 namespace sfa.poc.matching.search.azure.application.Entities
 {
@@ -6,21 +7,14 @@ namespace sfa.poc.matching.search.azure.application.Entities
     public class Location
     {
         public long Id { get; set; }
-
-        ///// <summary>
-        ///// Key for Azure search
-        ///// </summary>
-        //public string Key
-        //{
-        //    get => Id.ToString();
-        //    set => Id = long.Parse(value);
-        //}
-
+        
         public string Postcode { get; set; }
         
         public decimal Longitude { get; set; }
 
         public decimal Latitude { get; set; }
+
+        //public GeographyPoint Location { get; set; }
 
         public decimal Distance { get; set; }
 
@@ -34,6 +28,6 @@ namespace sfa.poc.matching.search.azure.application.Entities
 
         public string AdminCounty { get; set; }
 
-        private string DebuggerDisplay => $"Location: {Postcode} ({Longitude}, {Latitude})";
+        private string DebuggerDisplay => $"Location: {Postcode} ({Latitude}, {Longitude})";
     }
 }

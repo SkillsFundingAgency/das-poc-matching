@@ -33,6 +33,5 @@ namespace sfa.poc.matching.search.azure.application.Entities
                 Description = Description
             };
         }
-
     }
 }

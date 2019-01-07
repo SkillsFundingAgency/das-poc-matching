@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using sfa.poc.matching.search.azure.application.Configuration;
-using sfa.poc.matching.search.azure.application.Entities;
 using sfa.poc.matching.search.azure.application.Interfaces;
 
 namespace sfa.poc.matching.search.azure
@@ -24,7 +22,7 @@ namespace sfa.poc.matching.search.azure
 
         public async Task Run()
         {
-            System.Console.WriteLine("App ready");
+            Console.WriteLine("App ready");
 
             do
             {
@@ -43,12 +41,40 @@ namespace sfa.poc.matching.search.azure
                         //Recreate the search index
                         await _searchService.Index();
                     }
+                    if (string.Compare(input, "/loc", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    {
+                        //Location search within 5 miles of CV1 2WT
+                        var results = (await _searchService.SearchLocations(52.400997M, -1.508122M, 5M)).ToList();
+                        Console.WriteLine($"Found {results.Count} results.");
+                        foreach (var location in results)
+                        {
+                            Console.WriteLine($"{location.Postcode}, ({location.Latitude}, {location.Latitude})");
+                        }
+                    }
                     else if (input.Length > 0)
                     {
-                        var results = await _searchService.Search(input);
-                        foreach (var course in results)
+                        //Crude way of getting lat/long/distance
+                        var tokens = input.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (tokens.Length == 3
+                            && decimal.TryParse(tokens[0], out decimal latitude)
+                            && decimal.TryParse(tokens[1], out decimal longitude)
+                            && decimal.TryParse(tokens[2], out decimal distance))
                         {
-                            Console.WriteLine($"{course.Id}, {course.Name}");
+                            var results = (await _searchService.SearchLocations(latitude, longitude, distance)).ToList();
+                            Console.WriteLine($"Found {results.Count} results.");
+                            foreach (var location in results)
+                            {
+                                Console.WriteLine($"{location.Postcode}, ({location.Latitude}, {location.Latitude})");
+                            }
+                        }
+                        else
+                        {
+                            var results = (await _searchService.SearchCourses(input)).ToList();
+                            Console.WriteLine($"Found {results.Count} results.");
+                            foreach (var course in results)
+                            {
+                                Console.WriteLine($"{course.Id}, {course.Name}");
+                            }
                         }
                     }
                     else
@@ -68,41 +94,6 @@ namespace sfa.poc.matching.search.azure
 
         private async Task RunDefaultAction()
         {
-            await TestPaging();
-        }
-
-        private async Task TestPaging()
-        {
-            Console.WriteLine("Testing Course paging:");
-            var page = 1;
-            var pageSize = 10;
-            IList<Course> courses = null;
-            do
-            {
-                courses = (await _sqlDataRepository.GetPageOfCourses(page, pageSize)).ToList();
-                foreach (var course in courses)
-                {
-                    Console.WriteLine($"{course.Id}\t{course.Name}");
-                }
-
-                page++;
-            } while (courses.Any() && page <= 3);
-
-            Console.WriteLine("");
-            Console.WriteLine("Testing Location paging:");
-            page = 1;
-            IList<Location> locations = null;
-            do
-            {
-                locations = (await _sqlDataRepository.GetPageOfLocations(page, pageSize)).ToList();
-                //TODO: Convert to list
-                foreach (var location in locations)
-                {
-                    Console.WriteLine($"{location.Id}\t{location.Postcode} ({location.Latitude},{location.Longitude})");
-                }
-
-                page++;
-            } while (locations.Any() && page <= 3);
         }
     }
 }

@@ -6,8 +6,11 @@ namespace sfa.poc.matching.search.azure.application.Interfaces
 {
     public interface ISearchProvider
     {
-        Task<IEnumerable<Course>> FindCourses(IEnumerable<string> keywords);
+        Task<IEnumerable<Course>> FindCourses(string searchText);
 
-        Task<IEnumerable<Location>> FindLocations(IEnumerable<string> keywords);
+        Task<IEnumerable<Location>> FindLocations(decimal latitude, decimal longitude, decimal distance);
+
+        Task RebuildIndexes();
+
     }
 }

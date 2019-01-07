@@ -25,7 +25,6 @@ namespace sfa.poc.matching.search.azure
 
                 var localConfiguration = builder.Build();
 
-                //IWebConfiguration Configuration { get; }
                 Configuration = ConfigurationService.GetConfig(
                         localConfiguration["EnvironmentName"],
                         localConfiguration["ConfigurationStorageConnectionString"],
