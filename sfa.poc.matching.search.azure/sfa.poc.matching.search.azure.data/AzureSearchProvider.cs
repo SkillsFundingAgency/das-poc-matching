@@ -192,12 +192,12 @@ namespace sfa.poc.matching.search.azure.data
 
         private static SearchServiceClient CreateSearchServiceClient(AzureSearchConfiguration configuration)
         {
-            return new SearchServiceClient(configuration.SearchServiceName, new SearchCredentials(configuration.SearchServiceAdminApiKey));
+            return new SearchServiceClient(configuration.Name, new SearchCredentials(configuration.AdminApiKey));
         }
 
         private static SearchIndexClient CreateSearchIndexClient(string indexName, AzureSearchConfiguration configuration)
         {
-            return new SearchIndexClient(configuration.SearchServiceName, indexName, new SearchCredentials(configuration.SearchServiceQueryApiKey));
+            return new SearchIndexClient(configuration.Name, indexName, new SearchCredentials(configuration.QueryApiKey));
         }
 
         private static async Task DeleteIndexIfExists(string indexName, SearchServiceClient serviceClient)

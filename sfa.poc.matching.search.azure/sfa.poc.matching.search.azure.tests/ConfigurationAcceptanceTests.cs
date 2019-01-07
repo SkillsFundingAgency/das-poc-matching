@@ -19,9 +19,9 @@ namespace sfa.poc.matching.search.azure.tests
             Assert.IsNotNull(config);
             Assert.IsFalse(string.IsNullOrEmpty(config.SqlConnectionString));
             Assert.IsNotNull(config.AzureSearchConfiguration);
-            Assert.IsFalse(string.IsNullOrEmpty(config.AzureSearchConfiguration.SearchServiceName));
-            Assert.IsFalse(string.IsNullOrEmpty(config.AzureSearchConfiguration.SearchServiceAdminApiKey));
-            Assert.IsFalse(string.IsNullOrEmpty(config.AzureSearchConfiguration.SearchServiceQueryApiKey));
+            Assert.IsFalse(string.IsNullOrEmpty(config.AzureSearchConfiguration.Name));
+            Assert.IsFalse(string.IsNullOrEmpty(config.AzureSearchConfiguration.AdminApiKey));
+            Assert.IsFalse(string.IsNullOrEmpty(config.AzureSearchConfiguration.QueryApiKey));
         }
     }
 }

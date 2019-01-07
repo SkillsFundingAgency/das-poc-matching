@@ -33,7 +33,7 @@ namespace sfa.poc.matching.search.azure
                     .Result;
 
                 Console.WriteLine($"Retrieved configuration. ");
-                Console.WriteLine($" - Search Service Name:   '{Configuration.AzureSearchConfiguration.SearchServiceName}'");
+                Console.WriteLine($" - Search Service Name:   '{Configuration.AzureSearchConfiguration.Name}'");
                 Console.WriteLine($" - Sql Connection String: '{Configuration.SqlConnectionString}'");
                 
                 var serviceCollection = new ServiceCollection();
@@ -60,7 +60,7 @@ namespace sfa.poc.matching.search.azure
 
             services.AddTransient<ISearchService, SearchService>();
 
-            if (Configuration.AzureSearchConfiguration.SearchServiceName.StartsWith("UseSqlServer=true", StringComparison.OrdinalIgnoreCase))
+            if (Configuration.AzureSearchConfiguration.Name.StartsWith("UseSqlServer=true", StringComparison.OrdinalIgnoreCase))
             {
                 services.AddTransient<ISearchProvider>(provider =>
                     new SqlSearchProvider(Configuration.SqlConnectionString));
