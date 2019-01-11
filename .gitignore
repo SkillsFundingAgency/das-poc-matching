@@ -260,4 +260,7 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Azure Functions localsettings file
+**/*.Functions/local.settings.json
+
 *-nlog.txt
