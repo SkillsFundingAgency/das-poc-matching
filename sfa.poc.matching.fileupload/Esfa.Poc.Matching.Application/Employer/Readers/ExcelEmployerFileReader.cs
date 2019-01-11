@@ -59,6 +59,7 @@ namespace Esfa.Poc.Matching.Application.Employer.Readers
             var postCode = GetCellValue(document, row.Descendants<Cell>().ElementAt(EmployerColumnIndex.PostCode));
             var createdBy = GetCellValue(document, row.Descendants<Cell>().ElementAt(EmployerColumnIndex.CreatedBy));
             var created = GetCellValue(document, row.Descendants<Cell>().ElementAt(EmployerColumnIndex.Created));
+            var modified = GetCellValue(document, row.Descendants<Cell>().ElementAt(EmployerColumnIndex.Modified));
             var modifiedBy = GetCellValue(document, row.Descendants<Cell>().ElementAt(EmployerColumnIndex.ModifiedBy));
             var owner = GetCellValue(document, row.Descendants<Cell>().ElementAt(EmployerColumnIndex.Owner));
 
@@ -81,6 +82,7 @@ namespace Esfa.Poc.Matching.Application.Employer.Readers
             fileUploadEmployer.CreatedBy = createdBy;
             fileUploadEmployer.Created = GetDate(created);
             fileUploadEmployer.ModifiedBy = modifiedBy;
+            fileUploadEmployer.Modified = GetDate(modified);
             fileUploadEmployer.Owner = owner;
 
             return fileUploadEmployer;
