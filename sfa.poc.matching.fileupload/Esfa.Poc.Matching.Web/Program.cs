@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace sfa.poc.matching.fileupload
+namespace Esfa.Poc.Matching.Web
 {
     public class Program
     {

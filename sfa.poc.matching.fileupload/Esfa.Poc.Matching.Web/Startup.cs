@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace sfa.poc.matching.fileupload
+namespace Esfa.Poc.Matching.Web
 {
     public class Startup
     {

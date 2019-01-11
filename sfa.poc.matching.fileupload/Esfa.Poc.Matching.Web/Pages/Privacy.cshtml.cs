@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace sfa.poc.matching.fileupload.Pages
+namespace Esfa.Poc.Matching.Web.Pages
 {
     public class PrivacyModel : PageModel
     {

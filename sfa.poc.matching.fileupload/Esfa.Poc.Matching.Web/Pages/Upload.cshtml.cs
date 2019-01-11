@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace sfa.poc.matching.fileupload.Pages
+namespace Esfa.Poc.Matching.Web.Pages
 {
     public class Upload : PageModel
     {
@@ -23,7 +23,9 @@ namespace sfa.poc.matching.fileupload.Pages
 
         public void OnGet()
         {
-            // TODO Show missing files -- Go to Sql database and see whats available
+            // TODO Show missing files -- Go to Sql database and see whats available?
+            var sqlConnectionString = _configuration.GetConnectionString("Sql");
+
         }
 
         public async Task<IActionResult> OnPostUploadFilesAsync(List<IFormFile> files)
