@@ -13,7 +13,7 @@ namespace Esfa.Poc.Matching.Functions
     public static class Timer
     {
         [Disable]
-        [FunctionName("TimerNew")]
+        [FunctionName("Timer")]
         public static async Task Run(
             [TimerTrigger("0 */2 * * * *")] TimerInfo timer,
             ILogger log,

@@ -17,25 +17,4 @@
     <ProjectReference Include="..\Esfa.Poc.Matching.Domain\Esfa.Poc.Matching.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Contacts\Contact-Simple.xlsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Contacts\Contact-Simple.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Employers\Employer-Simple.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Employers\Employer-Simple.xlsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Queries\Query-Simple.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Queries\Query-Simple.xlsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

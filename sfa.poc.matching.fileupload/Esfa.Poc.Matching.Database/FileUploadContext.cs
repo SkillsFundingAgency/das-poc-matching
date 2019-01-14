@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Poc.Matching.Application.Interfaces;
-using Esfa.Poc.Matching.Database.Configuration;
 using Esfa.Poc.Matching.Entities;
 using Microsoft.EntityFrameworkCore;
 

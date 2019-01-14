@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="12.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Esfa.Poc.Matching.Application.Common\Esfa.Poc.Matching.Application.Common.csproj" />
+    <ProjectReference Include="..\Esfa.Poc.Matching.Domain\Esfa.Poc.Matching.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

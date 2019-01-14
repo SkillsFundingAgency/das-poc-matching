@@ -5,8 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="12.1.0" />
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.8.1" />
     <PackageReference Include="FluentValidation" Version="8.1.2" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.5.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
@@ -16,6 +14,8 @@
     <ProjectReference Include="..\Esfa.Poc.Matching.Common\Esfa.Poc.Matching.Common.csproj" />
     <ProjectReference Include="..\Esfa.Poc.Matching.Domain\Esfa.Poc.Matching.Domain.csproj" />
     <ProjectReference Include="..\Esfa.Poc.Matching.Entities\Esfa.Poc.Matching.Entities.csproj" />
+    <ProjectReference Include="..\Esfa.Poc.Matching.FileReader.Csv\Esfa.Poc.Matching.FileReader.Csv.csproj" />
+    <ProjectReference Include="..\Esfa.Poc.Matching.FileUpload.Excel\Esfa.Poc.Matching.FileReader.Excel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

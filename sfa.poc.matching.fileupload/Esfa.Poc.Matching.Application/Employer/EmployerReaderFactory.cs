@@ -1,5 +1,7 @@
 ﻿using System;
-using Esfa.Poc.Matching.Application.Employer.Readers;
+using Esfa.Poc.Matching.Application.Common.Interfaces;
+using Esfa.Poc.Matching.FileReader.Csv.Employer;
+using Esfa.Poc.Matching.FileReader.Excel.Employer;
 
 namespace Esfa.Poc.Matching.Application.Employer
 {

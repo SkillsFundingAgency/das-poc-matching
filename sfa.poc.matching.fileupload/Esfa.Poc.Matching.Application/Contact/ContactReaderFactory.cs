@@ -1,5 +1,7 @@
-﻿using Esfa.Poc.Matching.Application.Contact.Readers;
-using System;
+﻿using System;
+using Esfa.Poc.Matching.Application.Common.Interfaces;
+using Esfa.Poc.Matching.FileReader.Csv.Contact;
+using Esfa.Poc.Matching.FileReader.Excel.Contact;
 
 namespace Esfa.Poc.Matching.Application.Contact
 {
