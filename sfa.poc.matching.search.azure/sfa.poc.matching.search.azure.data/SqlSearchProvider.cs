@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using sfa.poc.matching.search.azure.application.Entities;
 using sfa.poc.matching.search.azure.application.Interfaces;
+using sfa.poc.matching.search.azure.application.Search;
 
 namespace sfa.poc.matching.search.azure.data
 {
@@ -13,7 +14,12 @@ namespace sfa.poc.matching.search.azure.data
         {
         }
 
-        public async Task<IEnumerable<Course>> FindCourses(string searchText)
+        public Task RebuildIndexes(IndexingOptions options)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task<IEnumerable<Course>> SearchCourses(string searchText)
         {
             throw new NotImplementedException();
 
@@ -41,14 +47,14 @@ namespace sfa.poc.matching.search.azure.data
              */
         }
 
-        public async Task<IEnumerable<Location>> FindLocations(decimal latitude, decimal longitude, decimal distance)
+        public Task<IEnumerable<Location>> SearchLocations(decimal latitude, decimal longitude, decimal distance)
         {
             throw new NotImplementedException();
         }
 
-        public async Task RebuildIndexes()
+        public Task<IEnumerable<CombinedIndexedItem>> SearchCombinedIndex(string searchString, decimal latitude, decimal longitude, decimal distance)
         {
-            return;
+            throw new NotImplementedException();
         }
     }
 }

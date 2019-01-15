@@ -5,6 +5,8 @@ namespace sfa.poc.matching.search.azure.application.Configuration
     {
         AzureSearchConfiguration AzureSearchConfiguration { get; set; }
 
+        string PostcodeRetrieverBaseUrl { get; set; }
+
         string SqlConnectionString { get; set; }
     }
 }

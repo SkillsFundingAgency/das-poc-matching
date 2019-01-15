@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace sfa.poc.matching.search.azure.tests
@@ -10,7 +9,7 @@ namespace sfa.poc.matching.search.azure.tests
         public static IConfigurationRoot Configuration { get; private set; }
 
         [OneTimeSetUp]
-        public async Task TestSetup()
+        public void TestSetup()
         {
             Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.test.json")

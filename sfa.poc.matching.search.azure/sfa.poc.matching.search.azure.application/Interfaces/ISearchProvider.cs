@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using sfa.poc.matching.search.azure.application.Entities;
+using sfa.poc.matching.search.azure.application.Search;
 
 namespace sfa.poc.matching.search.azure.application.Interfaces
 {
     public interface ISearchProvider
     {
-        Task<IEnumerable<Course>> FindCourses(string searchText);
+        Task RebuildIndexes(IndexingOptions options);
 
-        Task<IEnumerable<Location>> FindLocations(decimal latitude, decimal longitude, decimal distance);
+        Task<IEnumerable<Course>> SearchCourses(string searchText);
 
-        Task RebuildIndexes();
-
+        Task<IEnumerable<Location>> SearchLocations(decimal latitude, decimal longitude, decimal searchRadius);
+        
+        Task<IEnumerable<CombinedIndexedItem>> SearchCombinedIndex(string searchText, decimal latitude, decimal longitude, decimal searchRadius);
     }
 }

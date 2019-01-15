@@ -8,7 +8,9 @@ using Microsoft.Azure.Search.Models;
 using Microsoft.Rest.Azure;
 using sfa.poc.matching.search.azure.application.Configuration;
 using sfa.poc.matching.search.azure.application.Entities;
+using sfa.poc.matching.search.azure.application.Helpers;
 using sfa.poc.matching.search.azure.application.Interfaces;
+using sfa.poc.matching.search.azure.application.Search;
 
 namespace sfa.poc.matching.search.azure.data
 {
@@ -23,9 +25,133 @@ namespace sfa.poc.matching.search.azure.data
             _sqlDataRepository = sqlDataRepository;
         }
 
-        public async Task<IEnumerable<Course>> FindCourses(string searchText)
+        public async Task RebuildIndexes(IndexingOptions options)
         {
-            var indexClient = CreateSearchIndexClient("courses", _configuration.AzureSearchConfiguration);
+            var serviceClient = CreateSearchServiceClient(_configuration.AzureSearchConfiguration);
+
+            //await RebuildCourseIndex(serviceClient);
+
+            //await RebuildLocationIndex(serviceClient);
+
+            await RebuildCombinedIndex(serviceClient, options);
+        }
+
+        private SearchServiceClient CreateSearchServiceClient(AzureSearchConfiguration configuration)
+        {
+            return new SearchServiceClient(configuration.Name, new SearchCredentials(configuration.AdminApiKey));
+        }
+
+        private SearchIndexClient CreateSearchIndexClient(string indexName, AzureSearchConfiguration configuration)
+        {
+            return new SearchIndexClient(configuration.Name, indexName, new SearchCredentials(configuration.QueryApiKey));
+        }
+
+        private async Task DeleteIndexIfExists(string indexName, ISearchServiceClient serviceClient)
+        {
+            if (await serviceClient.Indexes.ExistsAsync(indexName))
+            {
+                await serviceClient.Indexes.DeleteAsync(indexName);
+            }
+        }
+
+        #region Course index methods
+
+        public async Task RebuildCourseIndex(ISearchServiceClient serviceClient)
+        {
+            var indexName = SearchConstants.CoursesIndexName;
+
+            await DeleteIndexIfExists(indexName, serviceClient);
+            await CreateCoursesIndex(serviceClient);
+
+            await CreateCourseSynonymMap(serviceClient);
+
+            await EnableSynonymsInCoursesIndex(serviceClient);
+
+            await UploadCourses(serviceClient.Indexes.GetClient(indexName));
+        }
+
+        private async Task CreateCoursesIndex(ISearchServiceClient serviceClient)
+        {
+            // https://docs.microsoft.com/en-us/rest/api/searchservice/create-index
+            var indexDefinition = new Index
+            {
+                Name = SearchConstants.CoursesIndexName,
+                Fields = new[]
+                {
+                    new Field("Id", DataType.String) { IsKey = true },
+                    new Field("Name", DataType.String) { IsSearchable = true, IsFilterable = true },
+                    new Field("Description", DataType.String) { IsSearchable = true, IsFilterable = true, IsFacetable = true }
+                }
+            };
+
+            await serviceClient.Indexes.CreateAsync(indexDefinition);
+        }
+
+        private async Task UploadCourses(ISearchIndexClient indexClient)
+        {
+            var page = 1;
+            var pageSize = 500;
+            IList<Course> courses;
+            do
+            {
+                courses = (await _sqlDataRepository.GetPageOfCourses(page, pageSize)).ToList();
+                if (courses.Any())
+                {
+                    var coursesForIndex = courses.Select(IndexedCourse.FromCourse);
+                    var batch = IndexBatch.Upload(coursesForIndex);
+
+                    try
+                    {
+                        await indexClient.Documents.IndexAsync(batch);
+                    }
+                    catch (IndexBatchException e)
+                    {
+                        // Sometimes when your Search service is under load, indexing will fail for some of the documents in
+                        // the batch. Depending on your application, you can take compensating actions like delaying and
+                        // retrying. For this simple demo, we just log the failed document keys and continue.
+                        //TODO: Add a logger and use it instead of console
+                        Console.WriteLine("Failed to index some of the documents: {0}",
+                            string.Join(", ", e.IndexingResults.Where(r => !r.Succeeded).Select(r => r.Key)));
+                    }
+                }
+
+                page++;
+            } while (courses.Any());
+        }
+
+        private Index AddSynonymMapsToCoursesIndexFields(Index index)
+        {
+            index.Fields.First(f => f.Name == "Name").SynonymMaps = new[] { SearchConstants.CourseSynonymMapName };
+            index.Fields.First(f => f.Name == "Description").SynonymMaps = new[] { SearchConstants.CourseSynonymMapName };
+            return index;
+        }
+
+        private async Task EnableSynonymsInCoursesIndex(ISearchServiceClient serviceClient)
+        {
+            const int maxTries = 3;
+
+            for (var i = 0; i < maxTries; ++i)
+            {
+                try
+                {
+                    var index = await serviceClient.Indexes.GetAsync(SearchConstants.CoursesIndexName);
+                    index = AddSynonymMapsToCoursesIndexFields(index);
+
+                    // The IfNotChanged condition ensures that the index is updated only if the ETags match.
+                    await serviceClient.Indexes.CreateOrUpdateAsync(index, accessCondition: AccessCondition.IfNotChanged(index));
+
+                    break;
+                }
+                catch (CloudException e) when (e.IsAccessConditionFailed())
+                {
+                    Console.WriteLine($"Index update failed : {e.Message}. Attempt({i}/{maxTries}).\n");
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Course>> SearchCourses(string searchText)
+        {
+            var indexClient = CreateSearchIndexClient(SearchConstants.CoursesIndexName, _configuration.AzureSearchConfiguration);
 
             var searchTokens = searchText
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
@@ -64,20 +190,82 @@ namespace sfa.poc.matching.search.azure.data
             return courses;
         }
 
-        public const double MilesToMetres = 1609.34;
+        #endregion
 
-        public async Task<IEnumerable<Location>> FindLocations(decimal latitude, decimal longitude, decimal distance)
+        #region Location index methods
+
+        public async Task RebuildLocationIndex(ISearchServiceClient serviceClient)
         {
-            //Distance is in miles, but we need it in km
-            var radius = Convert.ToDouble(distance) * MilesToMetres / 1000;
+            var indexName = SearchConstants.LocationsIndexName;
+            await DeleteIndexIfExists(indexName, serviceClient);
+            await CreateLocationsIndex(serviceClient);
+            await UploadLocations(serviceClient.Indexes.GetClient(indexName));
+        }
+
+        private async Task CreateLocationsIndex(ISearchServiceClient serviceClient)
+        {
+            var indexDefinition = new Index
+            {
+                Name = SearchConstants.LocationsIndexName,
+                Fields = new[]
+                {
+                    new Field("Id", DataType.String) { IsKey = true },
+                    new Field("Postcode", DataType.String) { IsSearchable = true },
+                    new Field("Location", DataType.GeographyPoint) { IsFilterable = true, IsSortable = true },
+                    new Field("Country", DataType.String) { IsSearchable = true, IsFilterable = true },
+                    new Field("Region", DataType.String) { IsFilterable = true, IsFacetable = true },
+                    new Field("AdminDistrict", DataType.String) { IsFilterable = true, IsFacetable = true },
+                    new Field("AdminDistrictCode", DataType.String) { IsFilterable = true, IsFacetable = true },
+                    new Field("AdminCounty", DataType.String) { IsFilterable = true, IsFacetable = true },
+                }
+            };
+
+            await serviceClient.Indexes.CreateAsync(indexDefinition);
+        }
+
+        private async Task UploadLocations(ISearchIndexClient indexClient)
+        {
+            var page = 1;
+            var pageSize = 500;
+            IList<Location> locations;
+            do
+            {
+                locations = (await _sqlDataRepository.GetPageOfLocations(page, pageSize)).ToList();
+                if (locations.Any())
+                {
+                    var locationsForIndex = locations.Select(IndexedLocation.FromLocation);
+                    var batch = IndexBatch.Upload(locationsForIndex);
+
+                    try
+                    {
+                        await indexClient.Documents.IndexAsync(batch);
+                    }
+                    catch (IndexBatchException e)
+                    {
+                        // Sometimes when your Search service is under load, indexing will fail for some of the documents in
+                        // the batch. Depending on your application, you can take compensating actions like delaying and
+                        // retrying. For this simple demo, we just log the failed document keys and continue.
+                        //TODO: Add a logger and use it instead of console
+                        Console.WriteLine("Failed to index some of the documents: {0}",
+                            string.Join(", ", e.IndexingResults.Where(r => !r.Succeeded).Select(r => r.Key)));
+                    }
+                }
+
+                page++;
+            } while (locations.Any());
+        }
+
+        public async Task<IEnumerable<Location>> SearchLocations(decimal latitude, decimal longitude, decimal searchRadius)
+        {
+            //Radius is in miles, but we need it in km
+            var radius = Convert.ToDouble(searchRadius) * SearchConstants.MilesToMeters / 1000;
 
             var latString = latitude.ToString(CultureInfo.InvariantCulture);
             var lngString = longitude.ToString(CultureInfo.InvariantCulture);
-            var radiusString = radius.ToString(CultureInfo.InvariantCulture);
 
-            Console.WriteLine($"Searching for locations within {distance} miles ({radius}km) of ({latitude}, {longitude})");
+            Console.WriteLine($"Searching for locations within {radius} miles ({radius}km) of ({latitude}, {longitude})");
 
-            var indexClient = CreateSearchIndexClient("locations", _configuration.AzureSearchConfiguration);
+            var indexClient = CreateSearchIndexClient(SearchConstants.LocationsIndexName, _configuration.AzureSearchConfiguration);
 
             var searchParams = new SearchParameters
             {
@@ -124,37 +312,115 @@ namespace sfa.poc.matching.search.azure.data
              */
         }
 
-        public async Task RebuildIndexes()
+        #endregion
+
+        #region Combined index methods
+
+        public async Task RebuildCombinedIndex(ISearchServiceClient serviceClient, IndexingOptions options)
         {
-            var serviceClient = CreateSearchServiceClient(_configuration.AzureSearchConfiguration);
+            var indexName = SearchConstants.CombinedIndexName;
+            await DeleteIndexIfExists(indexName, serviceClient);
 
-            await DeleteIndexIfExists("courses", serviceClient);
-            await CreateCoursesIndex(serviceClient);
+            //await CreateCustomAnalyzers(serviceClient);
 
-            await UploadSynonyms(serviceClient);
-            await EnableSynonymsInCoursesIndex(serviceClient);
+            await CreateCombinedIndex(serviceClient);
 
-            var coursesIndexClient = serviceClient.Indexes.GetClient("courses");
-            await UploadCourses(coursesIndexClient);
+            if (options.HasFlag(IndexingOptions.UseSynonyms))
+            {
+                await CreateCourseSynonymMap(serviceClient);
+                await EnableSynonymsInCombinedIndex(serviceClient);
+            }
 
-            await DeleteIndexIfExists("locations", serviceClient);
-            await CreateLocationsIndex(serviceClient);
-
-            var locationsIndexClient = serviceClient.Indexes.GetClient("locations");
-
-            await UploadLocations(locationsIndexClient);
+            await UploadCombinedIndexItems(serviceClient.Indexes.GetClient(indexName));
         }
 
-        private async Task EnableSynonymsInCoursesIndex(ISearchServiceClient serviceClient)
+        private async Task CreateCombinedIndex(ISearchServiceClient serviceClient)
         {
-            int MaxNumTries = 3;
+            var indexDefinition = new Index
+            {
+                Name = SearchConstants.CombinedIndexName,
+                Fields = FieldBuilder.BuildForType<CombinedIndexedItem>(),
+                Analyzers = new List<Analyzer>
+                {
+                    new CustomAnalyzer
+                    {
+                        Name = SearchConstants.AdvancedAnalyzerName,
+                        TokenFilters = new List<TokenFilterName>
+                        {
+                            TokenFilterName.Lowercase,
+                            TokenFilterName.AsciiFolding,
+                            //TokenFilterName.Phonetic,
+                            //TokenFilterName.EdgeNGram
+                        },
+                        Tokenizer = TokenizerName.Create(SearchConstants.NGramTokenizerName),
+                        //Tokenizer = TokenizerName.EdgeNGram,
+                    },
+                    new CustomAnalyzer
+                    {
+                        Name = SearchConstants.AdvancedAnalyzer_2_Name,
+                        Tokenizer = TokenizerName.EdgeNGram,
+                        TokenFilters = new List<TokenFilterName>
+                        {
+                            TokenFilterName.Lowercase,
+                            "myNGramTokenFilter"
+                        }
+                    }
+                },
+                Tokenizers = new List<Tokenizer>
+                {
+                    new NGramTokenizer(SearchConstants.NGramTokenizerName)
+                    {
+                        MinGram = 5,
+                        MaxGram = 30,
+                        TokenChars = new List<TokenCharacterKind>
+                        {
+                            TokenCharacterKind.Letter,
+                            TokenCharacterKind.Digit,
+                        }
+                    }
+                },
+                TokenFilters = new List<TokenFilter>
+                {
+                    new NGramTokenFilterV2
+                    {
+                        Name = "myNGramTokenFilter",
+                        MinGram = 1,
+                        MaxGram = 100
+                    }
+                }
+            };
 
-            for (int i = 0; i < MaxNumTries; ++i)
+            await serviceClient.Indexes.CreateAsync(indexDefinition);
+        }
+
+        private async Task CreateCourseSynonymMap(ISearchServiceClient serviceClient)
+        {
+            // https://docs.microsoft.com/en-us/azure/search/search-synonyms-tutorial-sdk
+            var synonymMap = new SynonymMap
+            {
+                Name = SearchConstants.CourseSynonymMapName,
+                //ETag = "",
+                Format = "solr",
+                Synonyms = "plumber, plumbing\n" +
+                           "electric, electrical, electrician\n" +
+                           "electric, electrics, electricity\n" +
+                           "electrician, electrical"
+            };
+
+            await serviceClient.SynonymMaps.CreateOrUpdateAsync(synonymMap);
+        }
+
+        private async Task EnableSynonymsInCombinedIndex(ISearchServiceClient serviceClient)
+        {
+            const int maxTries = 3;
+
+            for (var i = 0; i < maxTries; ++i)
             {
                 try
                 {
-                    var index = await serviceClient.Indexes.GetAsync("courses");
-                    index = AddSynonymMapsToFields(index);
+                    var index = await serviceClient.Indexes.GetAsync(SearchConstants.CombinedIndexName);
+                    index.Fields.First(f => f.Name == "courseName").SynonymMaps = new[] { SearchConstants.CourseSynonymMapName };
+                    index.Fields.First(f => f.Name == "courseDescription").SynonymMaps = new[] { SearchConstants.CourseSynonymMapName };
 
                     // The IfNotChanged condition ensures that the index is updated only if the ETags match.
                     await serviceClient.Indexes.CreateOrUpdateAsync(index, accessCondition: AccessCondition.IfNotChanged(index));
@@ -163,117 +429,36 @@ namespace sfa.poc.matching.search.azure.data
                 }
                 catch (CloudException e) when (e.IsAccessConditionFailed())
                 {
-                    Console.WriteLine($"Index update failed : {e.Message}. Attempt({i}/{MaxNumTries}).\n");
+                    Console.WriteLine($"Index update failed : {e.Message}. Attempt({i}/{maxTries}).\n");
                 }
             }
         }
 
-        private static Index AddSynonymMapsToFields(Index index)
-        {
-            index.Fields.First(f => f.Name == "Name").SynonymMaps = new[] { "desc-synonymmap" };
-            index.Fields.First(f => f.Name == "Description").SynonymMaps = new[] { "desc-synonymmap" };
-            return index;
-        }
-
-        private async Task UploadSynonyms(ISearchServiceClient serviceClient)
-        {
-            // https://docs.microsoft.com/en-us/azure/search/search-synonyms-tutorial-sdk
-            var synonymMap = new SynonymMap
-            {
-                Name = "desc-synonymmap",
-                Format = "solr",
-                Synonyms = "plumber, plumbing\n" +
-                           "electric, electrical, electrician\n" +
-                           "electrician, electrical"
-            };
-
-            await serviceClient.SynonymMaps.CreateOrUpdateAsync(synonymMap);
-        }
-
-        private static SearchServiceClient CreateSearchServiceClient(AzureSearchConfiguration configuration)
-        {
-            return new SearchServiceClient(configuration.Name, new SearchCredentials(configuration.AdminApiKey));
-        }
-
-        private static SearchIndexClient CreateSearchIndexClient(string indexName, AzureSearchConfiguration configuration)
-        {
-            return new SearchIndexClient(configuration.Name, indexName, new SearchCredentials(configuration.QueryApiKey));
-        }
-
-        private static async Task DeleteIndexIfExists(string indexName, SearchServiceClient serviceClient)
-        {
-            if (await serviceClient.Indexes.ExistsAsync(indexName))
-            {
-                await serviceClient.Indexes.DeleteAsync(indexName);
-            }
-        }
-
-        private static async Task CreateCoursesIndex(ISearchServiceClient serviceClient)
-        {
-            var indexName = "courses";
-            //This is the way to do it if we have annotated our Course class:
-            /*
-            var indexDefinition = new Index()
-            {
-                Name = indexName,
-                Fields = FieldBuilder.BuildForType<Course>()
-            };
-            */
-
-            // https://docs.microsoft.com/en-us/rest/api/searchservice/create-index
-            var indexDefinition = new Index()
-            {
-                Name = indexName,
-                Fields = new[]
-                {
-                    new Field("Id", DataType.String) { IsKey = true },
-                    new Field("Name", DataType.String) { IsSearchable = true, IsFilterable = true },
-                    new Field("Description", DataType.String) { IsSearchable = true, IsFilterable = true, IsFacetable = true }
-                }
-            };
-
-            await serviceClient.Indexes.CreateAsync(indexDefinition);
-        }
-
-        private static async Task CreateLocationsIndex(ISearchServiceClient serviceClient)
-        {
-            var indexName = "locations";
-
-            var indexDefinition = new Index()
-            {
-                Name = indexName,
-                Fields = new[]
-                {
-                    new Field("Id", DataType.String) { IsKey = true },
-                    new Field("Postcode", DataType.String) { IsSearchable = true },
-                    new Field("Location", DataType.GeographyPoint) { IsFilterable = true, IsSortable = true },
-                    new Field("Country", DataType.String) { IsSearchable = true, IsFilterable = true },
-                    new Field("Region", DataType.String) { IsFilterable = true, IsFacetable = true },
-                    new Field("AdminDistrict", DataType.String) { IsFilterable = true, IsFacetable = true },
-                    new Field("AdminDistrictCode", DataType.String) { IsFilterable = true, IsFacetable = true },
-                    new Field("AdminCounty", DataType.String) { IsFilterable = true, IsFacetable = true },
-                }
-            };
-
-            await serviceClient.Indexes.CreateAsync(indexDefinition);
-        }
-
-        private async Task UploadCourses(ISearchIndexClient indexClient)
+        private async Task UploadCombinedIndexItems(ISearchIndexClient indexClient)
         {
             var page = 1;
-            var pageSize = 100;
-            IList<Course> courses = null;
+            var pageSize = 500;
+            IList<CombinedIndexedItem> items;
             do
             {
-                courses = (await _sqlDataRepository.GetPageOfCourses(page, pageSize)).ToList();
-                if (courses.Any())
+                items = (await _sqlDataRepository.GetPageOfCombinedItems(page, pageSize)).ToList();
+                if (items.Any())
                 {
-                    var coursesForIndex = courses.Select(IndexedCourse.FromCourse);
-                    var batch = IndexBatch.Upload(coursesForIndex);
+                    var batch = IndexBatch.Upload(items);
 
+                    Console.WriteLine($"Uploading page {page} with {items.Count} items to index {SearchConstants.CombinedIndexName}");
+                    //foreach (var action in batch.Actions)
+                    //{
+                    //    Console.WriteLine($"    Uploading {action.Document.Id} - {action.Document.CourseName}");
+                    //}
                     try
                     {
                         var status = await indexClient.Documents.IndexAsync(batch);
+                        Console.WriteLine($"Uploaded {items.Count} documents to index '{indexClient.IndexName}'. Page {page}.");
+                        //foreach (var statusResult in status.Results)
+                        //{
+                        //    Console.WriteLine($"    {statusResult.Key}, {statusResult.Succeeded} {statusResult.StatusCode}, {statusResult.ErrorMessage}");
+                        //}
                     }
                     catch (IndexBatchException e)
                     {
@@ -287,39 +472,74 @@ namespace sfa.poc.matching.search.azure.data
                 }
 
                 page++;
-            } while (courses.Any());
+            } while (items.Any());
         }
 
-        private async Task UploadLocations(ISearchIndexClient indexClient)
+        public async Task<IEnumerable<CombinedIndexedItem>> SearchCombinedIndex(string searchText, decimal latitude, decimal longitude, decimal searchRadius)
         {
-            var page = 1;
-            var pageSize = 100;
-            IList<Location> locations = null;
-            do
+            var indexClient = CreateSearchIndexClient(SearchConstants.CombinedIndexName, _configuration.AzureSearchConfiguration);
+
+            searchText = !string.IsNullOrWhiteSpace(searchText)
+                ? searchText
+                : "*";
+            Console.WriteLine($"Searching for '{searchText}'");
+
+            var searchParameters = new SearchParameters
             {
-                locations = (await _sqlDataRepository.GetPageOfLocations(page, pageSize)).ToList();
-                if (locations.Any())
+                SearchMode = SearchMode.Any,
+                //QueryType = QueryType.Full,
+                SearchFields = new []
                 {
-                    var locationsForIndex = locations.Select(IndexedLocation.FromLocation);
-                    var batch = IndexBatch.Upload(locationsForIndex);
-
-                    try
-                    {
-                        var status = await indexClient.Documents.IndexAsync(batch);
-                    }
-                    catch (IndexBatchException e)
-                    {
-                        // Sometimes when your Search service is under load, indexing will fail for some of the documents in
-                        // the batch. Depending on your application, you can take compensating actions like delaying and
-                        // retrying. For this simple demo, we just log the failed document keys and continue.
-                        //TODO: Add a logger and use it instead of console
-                        Console.WriteLine("Failed to index some of the documents: {0}",
-                            string.Join(", ", e.IndexingResults.Where(r => !r.Succeeded).Select(r => r.Key)));
-                    }
+                    "courseName",
+                    //"courseDescription",
+                    //"providerName"
+                },
+                OrderBy = new []
+                {
+                    "courseName desc",
+                    //$"geo.distance(location, geography'POINT({longitude} {latitude})')"
                 }
+            };
 
-                page++;
-            } while (locations.Any());
+            if (latitude != 0 && longitude != 0)
+            {
+                var radius = Convert.ToDouble(searchRadius) * SearchConstants.MilesToMeters / 1000;
+
+                Console.WriteLine($"Searching for locations within {radius} miles ({radius}km) of ({latitude}, {longitude})");
+                searchParameters.Filter =
+                    $"geo.distance(location, geography'POINT({longitude} {latitude})') lt {radius}";
+
+                searchParameters.OrderBy = new []
+                {
+                    $"geo.distance(location, geography'POINT({longitude} {latitude})')"
+                };
+            }
+
+            var searchResults = await indexClient.Documents.SearchAsync<CombinedIndexedItem>(searchText, searchParameters);
+
+            var results = searchResults.Results.Select(r => r.Document).ToList();
+            SetDistancesInSearchResults(latitude, longitude, results);
+
+            return results;
         }
+
+        private void SetDistancesInSearchResults(decimal latitude, decimal longitude, IEnumerable<CombinedIndexedItem> results)
+        {
+            if (latitude != 0 && longitude != 0)
+            {
+                var calculator = new DistanceCalculator();
+                foreach (var item in results)
+                {
+                    item.Distance = calculator.DistanceFromLatLong(
+                        Convert.ToDouble(latitude),
+                        Convert.ToDouble(longitude),
+                        item.Location.Latitude,
+                        item.Location.Longitude);
+                }
+            }
+
+        }
+
+        #endregion
     }
 }

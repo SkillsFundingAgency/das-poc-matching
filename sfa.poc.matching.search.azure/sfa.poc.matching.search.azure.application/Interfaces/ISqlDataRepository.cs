@@ -10,5 +10,7 @@ namespace sfa.poc.matching.search.azure.application.Interfaces
         Task<IEnumerable<Course>> GetPageOfCourses(int pageNumber, int pageSize);
 
         Task<IEnumerable<Location>> GetPageOfLocations(int pageNumber, int pageSize);
+
+        Task<IEnumerable<CombinedIndexedItem>> GetPageOfCombinedItems(int pageNumber, int pageSize);
     }
 }

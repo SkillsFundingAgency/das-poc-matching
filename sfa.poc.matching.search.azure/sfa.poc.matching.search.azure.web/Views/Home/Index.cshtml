@@ -1,0 +1,73 @@
+﻿@using Microsoft.Spatial
+@model sfa.poc.matching.search.azure.web.ViewModels.SearchViewModel
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Search</h1>
+        <form method="post" defaultButton="btnSubmit">
+            <div class="govuk-form-group" >
+                <label class="govuk-label govuk-label--l" asp-for="@Model.Postcode">Postcode:</label>
+                <input class="govuk-input govuk-input--width-20" asp-for="@Model.Postcode" value="@Model.Postcode" />
+            </div>
+            <div class="govuk-form-group" >
+                <label class="govuk-label govuk-label--l" asp-for="@Model.SearchText">Search Text:</label>
+                <input class="govuk-input govuk-input--width-20" asp-for="@Model.SearchText" value="@Model.SearchText" />
+            </div>
+            <div class="govuk-form-group" >
+                <label class="govuk-label govuk-label--l" asp-for="@Model.SearchRadius">Within distance:</label>
+                <input class="govuk-input govuk-input--width-20" asp-for="@Model.SearchRadius" value="@Model.SearchRadius" />
+            </div>
+            <div class="govuk-form-group">
+                <input id="btnSubmit" class="govuk-button" type="submit" value="Search">
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.SearchResults != null && Model.SearchResults.Any())
+{
+<div class="govuk-grid-row">
+        <div class="col-md-12">
+            <h2>
+                Results- @Model.SearchResults?.Count courses found
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <table class="table table-bordered table-striped">
+                @foreach (var searchResult in Model.SearchResults)
+                {
+                    <tr>
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">@searchResult.Postcode</h4>
+                                @*<h5 class="card-subtitle mb-2 text-muted">Distance: @($"{(searchResult.Distance / Application.Constants.MilesToMeters): #.00}") miles</h5>*@
+                                <p class="card-text">
+                                    Provider <strong>@searchResult.ProviderName</strong> in @searchResult.Region,  @searchResult.AdminCounty
+                                <p class="card-text">
+                                    @searchResult.CourseName
+                                </p>
+                                @if (searchResult.Distance.HasValue)
+                                {
+                                <p class="card-text">
+                                    @($"{searchResult.Distance: #.00}") miles away. Lat/long (@searchResult.Location.Latitude, @searchResult.Location.Longitude)
+                                </p>
+                                }
+                                @*<a href="#" class="card-link">link</a>*@
+                            </div>
+                        </div>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    }
+</main>
