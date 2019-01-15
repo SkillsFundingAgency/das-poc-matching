@@ -84,7 +84,8 @@ namespace SFA.POC.Matching.Application.Importer
 
         private async Task<PostcodeModel> CheckLocationAndRetryUsingOutcodeAsync(PostcodeModel postcodeModel)
         {
-            if (!postcodeModel.Latitude.HasValue || !postcodeModel.Longitude.HasValue)
+            if (postcodeModel != null
+                && (!postcodeModel.Latitude.HasValue || !postcodeModel.Longitude.HasValue))
             {
                 postcodeModel = await GetPostcodeAsync(postcodeModel.OutCode);
             }
