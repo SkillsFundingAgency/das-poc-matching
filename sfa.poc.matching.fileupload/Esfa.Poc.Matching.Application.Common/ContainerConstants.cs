@@ -1,4 +1,4 @@
-namespace Esfa.Poc.Matching.Functions
+namespace Esfa.Poc.Matching.Application.Common
 {
     public class ContainerConstants
     {

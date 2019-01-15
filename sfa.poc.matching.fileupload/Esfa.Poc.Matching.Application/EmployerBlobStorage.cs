@@ -1,11 +1,13 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Esfa.Poc.Matching.Application.Common;
+using Esfa.Poc.Matching.Application.Interfaces;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace Esfa.Poc.Matching.Application.Queries
+namespace Esfa.Poc.Matching.Application
 {
-    public class EmployerBlobStorage
+    public class EmployerBlobStorage : IEmployerBlobStorage
     {
         private readonly string _storageAccountConnection;
 
@@ -14,23 +16,19 @@ namespace Esfa.Poc.Matching.Application.Queries
             _storageAccountConnection = storageAccountConnection;
         }
 
-        public async Task<BlobResult> Download(string containerName, string blobName)
+        public async Task<BlobResult> Download(Stream stream, string blobName)
         {
             var blobResult = new BlobResult();
-            var cloudBlobContainer = await GetContainer(containerName);
+            var cloudBlobContainer = await GetContainer(ContainerConstants.Employer);
             var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(blobName);
             var blobExists = await cloudBlockBlob.ExistsAsync();
             if (!blobExists)
                 return blobResult;
 
-            var stream = new MemoryStream();
-            //using (var stream = new MemoryStream())
-            //{
             await cloudBlockBlob.DownloadToStreamAsync(stream);
             stream.Position = 0;
             blobResult.Blob = stream;
             blobResult.Success = true;
-            //}
 
             return blobResult;
         }

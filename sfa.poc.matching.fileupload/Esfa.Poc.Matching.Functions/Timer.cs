@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Poc.Matching.Application.Enums;
 using Esfa.Poc.Matching.Application.Factories;
@@ -12,10 +13,10 @@ namespace Esfa.Poc.Matching.Functions
 {
     public static class Timer
     {
-        [Disable]
+        //[Disable]
         [FunctionName("Timer")]
         public static async Task Run(
-            [TimerTrigger("0 */2 * * * *")] TimerInfo timer,
+            [TimerTrigger("%TimerInterval%")] TimerInfo timer,
             ILogger log,
             [Queue("employers", Connection = "AzureWebJobsStorage")] IAsyncCollector<string> employerOutput,
             [Queue("contacts", Connection = "AzureWebJobsStorage")] IAsyncCollector<string> contactOutput,
@@ -37,25 +38,23 @@ namespace Esfa.Poc.Matching.Functions
             var getFileUploadQuery = new GetFileUploadQuery(dbContextService);
             var filesToProcess = await getFileUploadQuery.Execute();
 
-            var employerBlobStorage = new EmployerBlobStorage(storageAccountConnection); 
             var fileUploadContext = new FileUploadContext(sqlConnectionString);
 
-            foreach (var file in filesToProcess)
+            var filesToProcessGroupedByType = filesToProcess.GroupBy(f => f.Type);
+            foreach (var files in filesToProcessGroupedByType)
             {
-                var fileUploadType = (FileUploadType)file.Type;
-                var containerName = GetContainerName(fileUploadType);
+                var fileUploadType = (FileUploadType)files.Key;
+                //var containerName = GetContainerName(fileUploadType);
+                var fileUploads = files.ToList();
+                
                 var queueOutput = GetQueueOutput(fileUploadType,
                     employerOutput,
                     contactOutput,
                     queryOutput);
 
-                var blobStream = await employerBlobStorage.Download(containerName, file.Path);
+                var blobImport = BlobImportFactory.Create(fileUploadContext, fileUploadType, storageAccountConnection);
+                var import = blobImport.Import(fileUploads, queueOutput);
 
-                var blobImport = BlobImportFactory.Create(fileUploadContext, fileUploadType);
-                var import = blobImport.Import(blobStream.Blob, file, queueOutput);
-                
-                // TODO -- Validate all records. Look for duplicates if necessary
-                // For each valid Record, fire off an event
             }
         }
 
@@ -77,17 +76,17 @@ namespace Esfa.Poc.Matching.Functions
             throw new InvalidOperationException();
         }
 
-        private static string GetContainerName(FileUploadType fileUploadType)
-        {
-            switch (fileUploadType)
-            {
-                case FileUploadType.Employer:
-                case FileUploadType.Contact:
-                case FileUploadType.Query:
-                    return ContainerConstants.Employer;
-            }
+        //private static string GetContainerName(FileUploadType fileUploadType)
+        //{
+        //    switch (fileUploadType)
+        //    {
+        //        case FileUploadType.Employer:
+        //        case FileUploadType.Contact:
+        //        case FileUploadType.Query:
+        //            return ContainerConstants.Employer;
+        //    }
 
-            throw new InvalidOperationException();
-        }
+        //    throw new InvalidOperationException();
+        //}
     }
 }

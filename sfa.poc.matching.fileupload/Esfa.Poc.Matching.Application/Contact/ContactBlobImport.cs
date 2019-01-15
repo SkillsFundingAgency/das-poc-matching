@@ -1,9 +1,8 @@
 ﻿using Esfa.Poc.Matching.Application.Interfaces;
-using Esfa.Poc.Matching.Entities;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Poc.Matching.Common;
+using Esfa.Poc.Matching.Entities;
 using Microsoft.Azure.WebJobs;
 using Newtonsoft.Json;
 
@@ -11,38 +10,29 @@ namespace Esfa.Poc.Matching.Application.Contact
 {
     public class ContactBlobImport : IBlobImport
     {
-        public Result Import(Stream stream, FileUpload fileUpload,
+        private readonly ContactDataLoader _dataLoader;
+        private readonly ContactDataValidator _dataValidator;
+
+        public ContactBlobImport(ContactDataLoader dataLoader,
+            ContactDataValidator dataValidator)
+        {
+            _dataLoader = dataLoader;
+            _dataValidator = dataValidator;
+        }
+
+        public async Task<Result> Import(List<FileUpload> fileUploads,
             IAsyncCollector<string> output)
         {
-            var fileExtension = Path.GetExtension(fileUpload.Path);
-            var reader = ContactReaderFactory.Create(fileExtension);
+            var returnResult = await _dataLoader.Load(fileUploads);
+            var result = _dataValidator.Validate(returnResult.Object);
 
-            var loadResult = reader.Load(stream);
-
-            if (!string.IsNullOrEmpty(loadResult.Error))
-                return Result.Fail(loadResult.Error);
-
-            var validator = new ContactValidator();
-
-            var errors = new List<string>();
-            foreach (var v in loadResult.Data)
+            if (!result.IsSuccess)
             {
-                var results = validator.Validate(v);
-                if (results.IsValid)
-                    continue;
-
-                var errorMessage = $"{v.Contact} failed because {string.Join(", ", results.Errors.Select(e => e.ErrorMessage))}";
-                errors.Add(errorMessage);
+                // TODO AU Error
             }
-
-            if (errors.Count > 0)
-            {
-                var error = string.Join("\r", errors.Select(e => e));
-                return Result.Fail(error);
-            }
-
-            foreach (var data in loadResult.Data)
-                output.AddAsync(JsonConvert.SerializeObject(data));
+ 
+            foreach (var data in returnResult.Object)
+                await output.AddAsync(JsonConvert.SerializeObject(data));
 
             return Result.Ok();
         }

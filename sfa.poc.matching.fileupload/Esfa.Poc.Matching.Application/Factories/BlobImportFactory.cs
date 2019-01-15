@@ -9,16 +9,18 @@ namespace Esfa.Poc.Matching.Application.Factories
 {
     public class BlobImportFactory
     {
-        public static IBlobImport Create(IFileUploadContext fileUploadContext, FileUploadType fileType)
+        public static IBlobImport Create(IFileUploadContext fileUploadContext, FileUploadType fileType, string storageAccountConnection)
         {
+            var employerBlobStorage = new EmployerBlobStorage(storageAccountConnection);
+
             switch (fileType)
             {
                 case FileUploadType.Employer:
-                    return new EmployerBlobImport();
+                    return new EmployerBlobImport(new EmployerDataLoader(employerBlobStorage), new EmployerDataValidator());
                 case FileUploadType.Contact:
-                    return new ContactBlobImport();
+                    return new ContactBlobImport(new ContactDataLoader(employerBlobStorage), new ContactDataValidator());
                 case FileUploadType.Query:
-                    return new QueryBlobImport();
+                    return new QueryBlobImport(new QueryDataLoader(employerBlobStorage), new QueryDataValidator());
             }
 
             throw new InvalidOperationException();
