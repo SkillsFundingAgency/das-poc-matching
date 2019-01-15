@@ -11,7 +11,7 @@ using NotificationsApiClientConfiguration = SFA.DAS.Notifications.Api.Client.Con
 
 namespace sfa.poc.matching.notifications.Application.Services
 {
-    public class EmailService : IEmailService
+    public class DasNotifyEmailService : IEmailService
     {
         //TODO: Pass some of these in configuration or as parameters to the send method
         private const string SYSTEM_ID = "TLevelsIndustryPlacement";
@@ -19,13 +19,13 @@ namespace sfa.poc.matching.notifications.Application.Services
         private const string REPLY_TO_ADDRESS = "";
         private const string SUBJECT = "Update on your application";
 
-        private readonly ILogger<EmailService> _logger;
+        private readonly ILogger<DasNotifyEmailService> _logger;
         //private readonly IConfigurationService _configurationService;
         private readonly IMatchingConfiguration _configuration;
         private readonly INotificationsApi _notificationsApi;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
 
-        public EmailService(ILogger<EmailService> logger, IMatchingConfiguration configuration, IEmailTemplateRepository emailTemplateRepository)
+        public DasNotifyEmailService(ILogger<DasNotifyEmailService> logger, IMatchingConfiguration configuration, IEmailTemplateRepository emailTemplateRepository)
         {
             _logger = logger;
             _configuration = configuration;
