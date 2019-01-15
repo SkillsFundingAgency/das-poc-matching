@@ -264,3 +264,7 @@ __pycache__/
 **/*.Functions/local.settings.json
 
 *-nlog.txt
+
+# Generated min files
+[Aa]pplication.[Mm]in.css
+[Aa]pplication.[Mm]in.js

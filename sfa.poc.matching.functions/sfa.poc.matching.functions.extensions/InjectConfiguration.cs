@@ -8,10 +8,29 @@ namespace sfa.poc.matching.functions.extensions
 {
     public class InjectConfiguration : IExtensionConfigProvider
     {
+        private IConfigurationService _configurationService;
+
+        //Default constructor creates a configuration service.
+        public InjectConfiguration()
+            : this(new ConfigurationService())
+        {
+        }
+
+        //This constructor is available for tests to inject a configuration service
+        public InjectConfiguration(IConfigurationService configurationService)
+        {
+            _configurationService = configurationService;
+        }
+
         public void Initialize(ExtensionConfigContext context)
         {
+            //TODO: Any way to inject the configuration service?
+            //      Maybe a ctor that can be called from tests, 
+            //      and create it here if it doesn't exist?
+            var configurationService = new ConfigurationService();
+
             var services = new ServiceCollection();
-            RegisterServices(services);
+            RegisterServices(services, configurationService);
             var serviceProvider = services.BuildServiceProvider(true);
 
             context
@@ -31,12 +50,10 @@ namespace sfa.poc.matching.functions.extensions
             //registry.RegisterExtension(typeof(IFunctionInvocationFilter), filter);
             //registry.RegisterExtension(typeof(IFunctionExceptionFilter), filter);
 
-
             //https://blog.jongallant.com/2018/01/azure-function-config/
-
         }
 
-        private void RegisterServices(IServiceCollection services)
+        private void RegisterServices(IServiceCollection services, IConfigurationService configurationService)
         {
             //var config = new ConfigurationBuilder()
             //    .SetBasePath(Directory.GetCurrentDirectory());
@@ -51,7 +68,7 @@ namespace sfa.poc.matching.functions.extensions
             //    .AddEnvironmentVariables()
             //    .Build();
 
-            var configuration = ConfigurationService.GetConfig(
+            var configuration = configurationService.GetConfig(
                     Environment.GetEnvironmentVariable("EnvironmentName"),
                     Environment.GetEnvironmentVariable("ConfigurationStorageConnectionString"),
                     Environment.GetEnvironmentVariable("Version"),

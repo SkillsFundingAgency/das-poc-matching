@@ -11,7 +11,7 @@ SET @g = geography::Point(52.404079, -1.509867, 4326); --CV1 2HJ
 --SET @g = geography::Point(51.742141, -1.295653, 4326); --OX2 9GX
 
 --Get post codes within 25 miles from local post code
-declare @radiusInMiles float = 25;
+declare @radiusInMiles float = 100;
 declare @milesToMetres float = 1609.34;
 declare @distance float = @radiusInMiles * @milesToMetres;
 

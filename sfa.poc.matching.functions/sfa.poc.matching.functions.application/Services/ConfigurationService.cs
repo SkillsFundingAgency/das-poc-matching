@@ -8,9 +8,9 @@ using sfa.poc.matching.functions.core.Interfaces;
 
 namespace sfa.poc.matching.functions.application.Services
 {
-    public class ConfigurationService
+    public class ConfigurationService : IConfigurationService
     {
-        public static async Task<IMatchingConfiguration> GetConfig(string environment, string storageConnectionString,
+        public async Task<IMatchingConfiguration> GetConfig(string environment, string storageConnectionString,
             string version, string serviceName)
         {
             try
