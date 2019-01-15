@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Notify.Client;
+using Notify.Interfaces;
 using sfa.poc.matching.notifications.Application.Data;
 using sfa.poc.matching.notifications.Application.Interfaces;
 using sfa.poc.matching.notifications.Application.Services;
@@ -48,9 +50,11 @@ namespace sfa.poc.matching.notifications
             services.AddTransient<IMatchingConfiguration>(provider => Configuration);
             services.AddTransient<NotificationsApiClientConfiguration>(provider => Configuration.NotificationsApiClientConfiguration);
 
-            services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<INotificationClient>(provider => new NotificationClient(Configuration.GovNotifyApiKey));
 
+            services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
+            //services.AddTransient<IEmailService, DasNotifyEmailService>();
+            services.AddTransient<IEmailService, GovNotifyEmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

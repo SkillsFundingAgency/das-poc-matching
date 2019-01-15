@@ -6,6 +6,8 @@ namespace sfa.poc.matching.notifications.Application.Interfaces
     {
         NotificationsApiClientConfiguration NotificationsApiClientConfiguration { get; set; }
 
+        string GovNotifyApiKey { get; set; }
+
         string SqlConnectionString { get; set; }
 
         string DefaultEmailAddress { get; set; }

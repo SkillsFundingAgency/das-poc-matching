@@ -32,7 +32,7 @@ namespace sfa.poc.matching.notifications.Controllers
             {
                 var template = !string.IsNullOrWhiteSpace(email.Template)
                     ? email.Template
-                    : EmailTemplateName.CANDIDATE_CONTACT_US;
+                    : EmailTemplateName.GOV_NOTIFY_TEST;
 
                 //var tokens = new { contactname = email.Tokens };
                 //var customFields = new 
@@ -51,7 +51,7 @@ namespace sfa.poc.matching.notifications.Controllers
                             UserEnquiry = "I have a question",
                             UserEnquiryDetails = "Wanted to have different appSettings for debug and release when building your app ? "
                         }
-                    : new { contactname = email.Tokens };
+                    : new { first_name = email.Tokens };
 
                 await _emailService.SendEmail(
                     template, 
