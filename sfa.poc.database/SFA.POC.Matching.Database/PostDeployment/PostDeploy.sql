@@ -20,7 +20,7 @@ END
 
 --Grant permissions on views to roles
 GRANT SELECT ON [dbo].[LocationsView] TO [DataAnalyst]
-GRANT SELECT ON [dbo].[ProvideCoursesWithLEPsView] TO [DataAnalyst]
+GRANT SELECT ON [dbo].[ProviderCoursesWithLEPsView] TO [DataAnalyst]
 
 
 --Set up initial data
@@ -31,7 +31,7 @@ GRANT SELECT ON [dbo].[ProvideCoursesWithLEPsView] TO [DataAnalyst]
 :r ".\Seed Locations.sql"
 :r ".\Seed Routes and Pathways.sql"
 
---Ceate random mapping
+--Create random mapping
 :r ".\Randomly Seed ProviderCourseLocations.sql"
 
 --Set up email templates

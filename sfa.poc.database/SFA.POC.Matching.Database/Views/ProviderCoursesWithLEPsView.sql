@@ -1,7 +1,8 @@
-﻿CREATE VIEW [dbo].[ProvideCoursesWithLEPsView]
+﻿CREATE VIEW [dbo].[ProviderCoursesWithLEPsView]
 	AS SELECT		pcl.[ProviderId],
 					p.[Name] AS [ProviderName],
 					pcl.[CourseId],
+					c.[LearnAimRef] AS [LarsId],
 					c.[Name] AS [CourseName],
 					pcl.[LocationId],
 					l.[Postcode],

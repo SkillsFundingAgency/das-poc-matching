@@ -20,4 +20,10 @@ BEGIN
 	DELETE FROM [dbo].[Locations]
 END
 
+--Drop incorrectly named view - deployment will recreate it
+IF EXISTS (SELECT * FROM sys.views v
+		   WHERE v.name = 'ProvideCoursesWithLEPsView'
+		    AND schema_id =  SCHEMA_ID('dbo'))
+	DROP VIEW [dbo].[ProvideCoursesWithLEPsView]
+
 

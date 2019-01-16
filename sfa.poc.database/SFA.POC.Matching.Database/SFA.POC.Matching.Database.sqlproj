@@ -80,7 +80,7 @@
     <Build Include="Indexes\IX_LocalEnterprisePartnershipDistricts_AdminDistrictCode.sql" />
     <None Include="Scripts\Query Courses With LEPs.sql" />
     <Build Include="Views\LocationsView.sql" />
-    <Build Include="Views\ProvideCoursesWithLEPsView.sql" />
+    <Build Include="Views\ProviderCoursesWithLEPsView.sql" />
     <Build Include="Tables\EmailTemplates.sql" />
     <Build Include="Tables\Routes.sql" />
     <Build Include="Tables\Pathways.sql" />

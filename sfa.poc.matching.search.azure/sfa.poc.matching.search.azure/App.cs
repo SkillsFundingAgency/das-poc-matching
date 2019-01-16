@@ -177,11 +177,11 @@ namespace sfa.poc.matching.search.azure
             {
                 if (latitude != 0 && longitude != 0 && radius != 0)
                 {
-                    Console.WriteLine($"{searchResult.Postcode}, {searchResult.Distance} miles, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - provider {searchResult.ProviderName} has course {searchResult.CourseName}");
+                    Console.WriteLine($"{searchResult.Postcode}, {searchResult.Distance} miles, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - {searchResult.ProviderName} has course {searchResult.LarsId} '{searchResult.CourseName}'");
                 }
                 else
                 {
-                    Console.WriteLine($"{searchResult.Postcode}, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - provider {searchResult.ProviderName} has course {searchResult.CourseName}");
+                    Console.WriteLine($"{searchResult.Postcode}, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - {searchResult.ProviderName} has course {searchResult.LarsId} '{searchResult.CourseName}'");
                 }
             }
         }

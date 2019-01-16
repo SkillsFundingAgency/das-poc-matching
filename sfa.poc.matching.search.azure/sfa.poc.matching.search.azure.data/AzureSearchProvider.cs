@@ -437,7 +437,7 @@ namespace sfa.poc.matching.search.azure.data
         private async Task UploadCombinedIndexItems(ISearchIndexClient indexClient)
         {
             var page = 1;
-            var pageSize = 500;
+            var pageSize = 1000;
             IList<CombinedIndexedItem> items;
             do
             {

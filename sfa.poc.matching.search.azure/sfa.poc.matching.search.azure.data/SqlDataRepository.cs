@@ -96,6 +96,7 @@ namespace sfa.poc.matching.search.azure.data
                                 pcl.[ProviderId],
                                 p.[Name] AS [ProviderName],
                                 pcl.[CourseId],
+					            c.[LearnAimRef] AS [LarsId],
                                 c.[Name] AS [CourseName],
                                 c.[Description] AS [CourseDescription],
                                 pcl.[LocationId],

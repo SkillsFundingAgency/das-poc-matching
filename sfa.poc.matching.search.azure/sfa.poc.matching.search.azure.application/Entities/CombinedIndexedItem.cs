@@ -16,6 +16,8 @@ namespace sfa.poc.matching.search.azure.application.Entities
 
         public int CourseId { get; set; }
 
+        public string LarsId { get; set; }
+        
         //TODO: Define a custom search analyzer, use "standard" for 
         //       - see https://azure.microsoft.com/en-gb/blog/custom-analyzers-in-azure-search/
         [IsSearchable, IsFilterable, IsSortable]
