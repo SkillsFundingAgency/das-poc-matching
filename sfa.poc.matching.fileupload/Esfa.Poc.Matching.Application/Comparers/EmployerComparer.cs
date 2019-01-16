@@ -18,10 +18,10 @@ namespace Esfa.Poc.Matching.Application.Comparers
             return isEqual;
         }
 
-        public int GetHashCode(Entities.Employer obj)
+        public int GetHashCode(Entities.Employer employer)
         {
-            return obj.AlsoKnownAs.GetHashCode() 
-                   ^ obj.CompanyType.GetHashCode();
+            return employer.AlsoKnownAs.GetHashCode() 
+                   ^ employer.CompanyType.GetHashCode();
         }
     }
 }

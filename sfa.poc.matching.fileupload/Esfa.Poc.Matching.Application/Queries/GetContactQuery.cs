@@ -18,7 +18,8 @@ namespace Esfa.Poc.Matching.Application.Queries
         public async Task<Entities.Contact> Execute(string companyName, DateTime createdOn)
         {
             var contact = await _dbContextService.Contact.Where(c => c.Employer.CompanyName == companyName
-                                                && c.Employer.CreatedOn == createdOn).FirstAsync();
+                                                && c.Employer.CreatedOn == createdOn)
+                .FirstOrDefaultAsync();
 
             return contact;
         }

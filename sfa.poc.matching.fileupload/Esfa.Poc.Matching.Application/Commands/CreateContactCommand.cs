@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Esfa.Poc.Matching.Application.Commands
 {
-    public class CreateEmployerCommand
+    public class CreateContactCommand
     {
         private readonly IFileUploadContext _fileUploadContext;
 
-        public CreateEmployerCommand(IFileUploadContext fileUploadContext)
+        public CreateContactCommand(IFileUploadContext fileUploadContext)
         {
             _fileUploadContext = fileUploadContext;
         }
 
-        public async Task Execute(Entities.Employer employer)
+        public async Task Execute(Entities.Contact contact)
         {
-            _fileUploadContext.Employer.Add(employer);
+            _fileUploadContext.Contact.Add(contact);
 
             int createdRecordCount;
             try
