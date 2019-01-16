@@ -12,8 +12,10 @@ namespace Esfa.Poc.Matching.Application.Mappers
         {
             if (employer == null)
             {
-                employer = new Entities.Employer();
-                employer.Id = Guid.NewGuid();
+                employer = new Entities.Employer
+                {
+                    Id = Guid.NewGuid()
+                };
             }
 
             Enum.TryParse(fileEmployer.Aupa, out AupaStatus aupa);
@@ -24,6 +26,7 @@ namespace Esfa.Poc.Matching.Application.Mappers
             employer.CompanyName = fileEmployer.CompanyName;
             employer.CompanyType = (int)companyType;
             employer.CreatedOn = fileEmployer.Created;
+
             return employer;
         }
 

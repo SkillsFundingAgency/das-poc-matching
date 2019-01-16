@@ -6,21 +6,21 @@ namespace Esfa.Poc.Matching.Application.Commands
 {
     public class UpdateEmployerCommand
     {
-        private readonly IFileUploadContext _dbContextService;
+        private readonly IFileUploadContext _fileUploadContext;
 
-        public UpdateEmployerCommand(IFileUploadContext dbContextService)
+        public UpdateEmployerCommand(IFileUploadContext fileUploadContext)
         {
-            _dbContextService = dbContextService;
+            _fileUploadContext = fileUploadContext;
         }
 
         public async Task Execute(Entities.Employer employer)
         {
-            _dbContextService.Employer.Update(employer).State = EntityState.Modified;
+            _fileUploadContext.Employer.Update(employer).State = EntityState.Modified;
 
             int updatedRecordCount;
             try
             {
-                updatedRecordCount = await _dbContextService.SaveAsync();
+                updatedRecordCount = await _fileUploadContext.SaveAsync();
             }
             catch (DbUpdateException due)
             {

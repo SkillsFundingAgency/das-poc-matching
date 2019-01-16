@@ -1,12 +1,15 @@
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Poc.Matching.Application.Commands;
+using Esfa.Poc.Matching.Application.Mappers;
+using Esfa.Poc.Matching.Application.Queries;
 using Esfa.Poc.Matching.Database;
 using Esfa.Poc.Matching.Domain;
 using Microsoft.Azure.WebJobs;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ExecutionContext = Microsoft.Azure.WebJobs.ExecutionContext;
 
 namespace Esfa.Poc.Matching.Functions
 {
@@ -18,7 +21,9 @@ namespace Esfa.Poc.Matching.Functions
             ILogger log,
             ExecutionContext context)
         {
-            log.LogInformation($"C# Queue trigger function processed: {contactJson}");
+            var logPrefix = GetLogPrefix();
+
+            log.LogInformation($"{logPrefix}: {contactJson}");
 
             var contact = JsonConvert.DeserializeObject<FileUploadContact>(contactJson);
 
@@ -28,10 +33,44 @@ namespace Esfa.Poc.Matching.Functions
                 .AddEnvironmentVariables()
                 .Build();
             var sqlConnectionString = config.GetConnectionString("Sql");
-            var dbContextService = new FileUploadContext(sqlConnectionString);
+            var fileUploadContext = new FileUploadContext(sqlConnectionString);
 
-            var contactInSql = await dbContextService.Contact.Where(c => c.Employer.CompanyName == contact.CompanyName
-                                                         && c.Employer.CreatedOn == contact.CreatedOnCompany).ToListAsync();
+            var getContactQuery = new GetContactQuery(fileUploadContext);
+            var contactInSql = await getContactQuery.Execute(contact.CompanyName, contact.CreatedOnCompany);
+
+            if (contactInSql == null)
+            {
+                log.LogInformation($"{logPrefix} Creating Contact: {contact.Contact}");
+
+                var newContact = ContactMapper.Map(contact, contactInSql);
+                var createEmployerCommand = new CreateContactCommand(fileUploadContext);
+                await createEmployerCommand.Execute(newContact);
+
+                log.LogInformation($"{logPrefix} Created Contact: {contact.Contact}");
+            }
+            else
+            {
+                var areEqual = contactInSql.Equals(contact);
+                if (!areEqual)
+                {
+                    log.LogInformation($"{logPrefix} Updating Contact: {contact.Contact}");
+
+                    var updatedEmployer = ContactMapper.Map(contact, contactInSql);
+                    var updateContactCommand = new UpdateContactCommand(fileUploadContext);
+                    await updateContactCommand.Execute(updatedEmployer);
+
+                    log.LogInformation($"{logPrefix} Updated Contact: {contact.Contact}");
+                }
+            }
+
+            log.LogInformation($"{logPrefix} Processed Contact: {contact.Contact}");
+        }
+
+        private static string GetLogPrefix()
+        {
+            var logPrefix = $"{nameof(EmployerContact)} - ThreadId={Thread.CurrentThread.ManagedThreadId}";
+
+            return logPrefix;
         }
     }
 }

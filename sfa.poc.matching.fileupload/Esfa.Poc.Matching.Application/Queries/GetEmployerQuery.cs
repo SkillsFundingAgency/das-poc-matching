@@ -18,7 +18,7 @@ namespace Esfa.Poc.Matching.Application.Queries
         public async Task<Entities.Employer> Execute(Guid id)
         {
             var employer = await _dbContextService.Employer.Where(e => e.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return employer;
         }

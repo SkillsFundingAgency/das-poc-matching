@@ -4,23 +4,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Esfa.Poc.Matching.Application.Commands
 {
-    public class CreateEmployerCommand
+    public class UpdateContactCommand
     {
         private readonly IFileUploadContext _fileUploadContext;
 
-        public CreateEmployerCommand(IFileUploadContext fileUploadContext)
+        public UpdateContactCommand(IFileUploadContext fileUploadContext)
         {
             _fileUploadContext = fileUploadContext;
         }
 
-        public async Task Execute(Entities.Employer employer)
+        public async Task Execute(Entities.Contact contact)
         {
-            _fileUploadContext.Employer.Add(employer);
+            _fileUploadContext.Contact.Update(contact).State = EntityState.Modified;
 
-            int createdRecordCount;
+            int updatedRecordCount;
             try
             {
-                createdRecordCount = await _fileUploadContext.SaveAsync();
+                updatedRecordCount = await _fileUploadContext.SaveAsync();
             }
             catch (DbUpdateException due)
             {
