@@ -8,16 +8,16 @@ namespace Esfa.Poc.Matching.Application.Queries
 {
     public class GetIndustryPlacementQuery
     {
-        private readonly IFileUploadContext _dbContextService;
+        private readonly IFileUploadContext _fileUploadContext;
 
-        public GetIndustryPlacementQuery(IFileUploadContext dbContextService)
+        public GetIndustryPlacementQuery(IFileUploadContext fileUploadContext)
         {
-            _dbContextService = dbContextService;
+            _fileUploadContext = fileUploadContext;
         }
 
         public async Task<Entities.IndustryPlacement> Execute(Guid id)
         {
-            var industryPlacement = await _dbContextService.IndustryPlacement.Where(i => i.Id == id)
+            var industryPlacement = await _fileUploadContext.IndustryPlacement.Where(i => i.Id == id)
                 .FirstAsync();
 
             return industryPlacement;

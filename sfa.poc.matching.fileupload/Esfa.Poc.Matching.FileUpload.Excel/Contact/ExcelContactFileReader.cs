@@ -31,7 +31,8 @@ namespace Esfa.Poc.Matching.FileReader.Excel.Contact
                 foreach (var row in rows)
                 {
                     var fileUploadContact = CreateContact(document, row);
-                    fileUploadContacts.Add(fileUploadContact);
+                    if (fileUploadContact != null)
+                        fileUploadContacts.Add(fileUploadContact);
                 }
 
                 fileLoadResult.Data = fileUploadContacts;
@@ -63,6 +64,10 @@ namespace Esfa.Poc.Matching.FileReader.Excel.Contact
             var createdBy = CellValueRetriever.Get(document, row.Descendants<Cell>().ElementAt(ContactColumnIndex.CreatedBy));
             var created = CellValueRetriever.Get(document, row.Descendants<Cell>().ElementAt(ContactColumnIndex.Created));
 
+            var isValid = ValidateMandatory(contact, contactType, preferredContact);
+            if (!isValid)
+                return null;
+
             var fileUploadContact = new FileUploadContact
             {
                 Contact = new Guid(contact),
@@ -87,6 +92,20 @@ namespace Esfa.Poc.Matching.FileReader.Excel.Contact
             };
 
             return fileUploadContact;
+        }
+
+        private static bool ValidateMandatory(string contact, string contactType, string preferredContact)
+        {
+            if (string.IsNullOrEmpty(contact))
+                return false;
+
+            if (string.IsNullOrEmpty(contactType))
+                return false;
+
+            if (string.IsNullOrEmpty(preferredContact))
+                return false;
+
+            return true;
         }
         #endregion
     }

@@ -9,16 +9,16 @@ namespace Esfa.Poc.Matching.Application.Queries
 {
     public class GetFileUploadQuery
     {
-        private readonly IFileUploadContext _dbContextService;
+        private readonly IFileUploadContext _fileUploadContext;
 
-        public GetFileUploadQuery(IFileUploadContext dbContextService)
+        public GetFileUploadQuery(IFileUploadContext fileUploadContext)
         {
-            _dbContextService = dbContextService;
+            _fileUploadContext = fileUploadContext;
         }
 
         public async Task<List<FileUpload>> Execute()
         {
-            var fileUploads = await _dbContextService.FileUpload.Where(fu => fu.ProcessedOn == null)
+            var fileUploads = await _fileUploadContext.FileUpload.Where(fu => fu.ProcessedOn == null)
                 .OrderBy(fu => fu.Type)
                 .ToListAsync();
 

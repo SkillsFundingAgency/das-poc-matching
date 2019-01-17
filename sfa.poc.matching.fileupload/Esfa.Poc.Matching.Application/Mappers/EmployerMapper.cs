@@ -14,7 +14,7 @@ namespace Esfa.Poc.Matching.Application.Mappers
             {
                 employer = new Entities.Employer
                 {
-                    Id = Guid.NewGuid()
+                    Id = fileEmployer.Account
                 };
             }
 

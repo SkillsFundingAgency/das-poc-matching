@@ -8,7 +8,7 @@ namespace Esfa.Poc.Matching.Application.Mappers
     public class ContactMapper
     {
         public static Entities.Contact Map(FileUploadContact fileContact,
-            Entities.Contact contact)
+            Entities.Contact contact, Guid employerGuid)
         {
             if (contact == null)
             {
@@ -16,9 +16,9 @@ namespace Esfa.Poc.Matching.Application.Mappers
                 contact.Id = Guid.NewGuid();
             }
 
+            contact.EntityRefId = employerGuid;
             var contactType = GetContactType(fileContact.ContactType);
             var preferredMethodOfContact = GetPreferredMethodOfContact(fileContact.PreferredContact);
-
             contact.ContactTypeId = (int)contactType;
             contact.PreferredContactMethodType = (int)preferredMethodOfContact;
             //contact.IsPrimary

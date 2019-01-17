@@ -8,11 +8,23 @@ namespace Esfa.Poc.Matching.FileReader.Excel
         internal static string Get(SpreadsheetDocument document, CellType cell)
         {
             var stringTablePart = document.WorkbookPart.SharedStringTablePart;
-            var cellValue = cell.CellValue.InnerXml;
 
-            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
+            var cellValue = string.Empty;
+            if (cell.DataType != null)
             {
-                return stringTablePart.SharedStringTable.ChildElements[int.Parse(cellValue)].InnerText;
+                switch (cell.DataType.Value)
+                {
+                    case CellValues.SharedString:
+                        cellValue = stringTablePart.SharedStringTable.ChildElements[int.Parse(cell.CellValue.InnerXml)].InnerText;
+                        break;
+                    case CellValues.InlineString:
+                        cellValue = cell.InnerText;
+                        break;
+                }
+            }
+            else if (cell.CellValue != null)
+            {
+                cellValue = cell.CellValue.InnerXml;
             }
 
             return cellValue;

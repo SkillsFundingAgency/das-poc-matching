@@ -8,16 +8,16 @@ namespace Esfa.Poc.Matching.Application.Queries
 {
     public class GetContactQuery
     {
-        private readonly IFileUploadContext _dbContextService;
+        private readonly IFileUploadContext _fileUploadContext;
 
-        public GetContactQuery(IFileUploadContext dbContextService)
+        public GetContactQuery(IFileUploadContext fileUploadContext)
         {
-            _dbContextService = dbContextService;
+            _fileUploadContext = fileUploadContext;
         }
 
         public async Task<Entities.Contact> Execute(string companyName, DateTime createdOn)
         {
-            var contact = await _dbContextService.Contact.Where(c => c.Employer.CompanyName == companyName
+            var contact = await _fileUploadContext.Contact.Where(c => c.Employer.CompanyName == companyName
                                                 && c.Employer.CreatedOn == createdOn)
                 .FirstOrDefaultAsync();
 

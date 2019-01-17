@@ -25,7 +25,7 @@ namespace Esfa.Poc.Matching.Functions
 
             log.LogInformation($"{logPrefix}: {contactJson}");
 
-            var contact = JsonConvert.DeserializeObject<FileUploadContact>(contactJson);
+            var contactFromFile = JsonConvert.DeserializeObject<FileUploadContact>(contactJson);
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(context.FunctionAppDirectory)
@@ -35,35 +35,41 @@ namespace Esfa.Poc.Matching.Functions
             var sqlConnectionString = config.GetConnectionString("Sql");
             var fileUploadContext = new FileUploadContext(sqlConnectionString);
 
-            var getContactQuery = new GetContactQuery(fileUploadContext);
-            var contactInSql = await getContactQuery.Execute(contact.CompanyName, contact.CreatedOnCompany);
+            var getEmployerQuery = new GetEmployerQuery(fileUploadContext);
+            var employerInSql = await getEmployerQuery.Execute(contactFromFile.CompanyName, contactFromFile.CreatedOnCompany);
+            if (employerInSql == null)
+            {
+                // TODO Employer has to exist
+            }
 
+            var getContactQuery = new GetContactQuery(fileUploadContext);
+            var contactInSql = await getContactQuery.Execute(contactFromFile.CompanyName, contactFromFile.CreatedOnCompany);
+
+            var contact = ContactMapper.Map(contactFromFile, contactInSql, employerInSql.Id);
             if (contactInSql == null)
             {
-                log.LogInformation($"{logPrefix} Creating Contact: {contact.Contact}");
+                log.LogInformation($"{logPrefix} Creating Contact: {contactFromFile.Contact}");
 
-                var newContact = ContactMapper.Map(contact, contactInSql);
                 var createEmployerCommand = new CreateContactCommand(fileUploadContext);
-                await createEmployerCommand.Execute(newContact);
+                await createEmployerCommand.Execute(contact);
 
-                log.LogInformation($"{logPrefix} Created Contact: {contact.Contact}");
+                log.LogInformation($"{logPrefix} Created Contact: {contactFromFile.Contact}");
             }
             else
             {
                 var areEqual = contactInSql.Equals(contact);
                 if (!areEqual)
                 {
-                    log.LogInformation($"{logPrefix} Updating Contact: {contact.Contact}");
+                    log.LogInformation($"{logPrefix} Updating Contact: {contactFromFile.Contact}");
 
-                    var updatedEmployer = ContactMapper.Map(contact, contactInSql);
                     var updateContactCommand = new UpdateContactCommand(fileUploadContext);
-                    await updateContactCommand.Execute(updatedEmployer);
+                    await updateContactCommand.Execute(contact);
 
-                    log.LogInformation($"{logPrefix} Updated Contact: {contact.Contact}");
+                    log.LogInformation($"{logPrefix} Updated Contact: {contactFromFile.Contact}");
                 }
             }
 
-            log.LogInformation($"{logPrefix} Processed Contact: {contact.Contact}");
+            log.LogInformation($"{logPrefix} Processed Contact: {contactFromFile.Contact}");
         }
 
         private static string GetLogPrefix()

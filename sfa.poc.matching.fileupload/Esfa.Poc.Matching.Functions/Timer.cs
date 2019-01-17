@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Poc.Matching.Application.Commands;
 using Esfa.Poc.Matching.Application.Enums;
 using Esfa.Poc.Matching.Application.Factories;
 using Esfa.Poc.Matching.Application.Queries;
@@ -33,12 +34,12 @@ namespace Esfa.Poc.Matching.Functions
             var sqlConnectionString = config.GetConnectionString("Sql");
             var storageAccountConnection = config.GetConnectionString("StorageAccount");
 
-            var dbContextService = new FileUploadContext(sqlConnectionString);
+            var fileUploadContext = new FileUploadContext(sqlConnectionString);
 
-            var getFileUploadQuery = new GetFileUploadQuery(dbContextService);
+            var getFileUploadQuery = new GetFileUploadQuery(fileUploadContext);
             var filesToProcess = await getFileUploadQuery.Execute();
 
-            var fileUploadContext = new FileUploadContext(sqlConnectionString);
+            var updateFileUploadCommand = new UpdateFileUploadCommand(fileUploadContext);
 
             var filesToProcessGroupedByType = filesToProcess.GroupBy(f => f.Type);
             foreach (var files in filesToProcessGroupedByType)
@@ -53,8 +54,14 @@ namespace Esfa.Poc.Matching.Functions
                     queryOutput);
 
                 var blobImport = BlobImportFactory.Create(fileUploadContext, fileUploadType, storageAccountConnection);
-                var import = blobImport.Import(fileUploads, queueOutput);
+                var import = await blobImport.Import(fileUploads, queueOutput);
+                if (import.IsSuccess)
+                {
+                    foreach (var fu in fileUploads)
+                        fu.ProcessedOn = DateTime.Now;
 
+                    await updateFileUploadCommand.Execute(fileUploads);
+                }
             }
         }
 
