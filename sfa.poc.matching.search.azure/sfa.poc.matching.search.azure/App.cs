@@ -39,7 +39,7 @@ namespace sfa.poc.matching.search.azure
                         break;
                     }
 
-                    var tokens = input?.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    var tokens = input?.Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
 
                     if (input == "?")
                     {
@@ -47,15 +47,16 @@ namespace sfa.poc.matching.search.azure
                     }
                     //else if (string.Compare(input, "/index", StringComparison.CurrentCultureIgnoreCase) == 0
                     //    || string.Compare(input, "/i", StringComparison.CurrentCultureIgnoreCase) == 0)
-                    else if (tokens?.Length > 0 && 
-                             (tokens[0].ToLower() == "/index" 
-                              || tokens[0].ToLower() =="/i"))
+                    else if (tokens?.Length > 0 &&
+                             (tokens[0].ToLower() == "/index"
+                              || tokens[0].ToLower() == "/i"))
                     {
                         var options = IndexingOptions.Default;
                         if (tokens.Any(t => t == "/syn"))
                         {
                             options |= IndexingOptions.UseSynonyms;
                         }
+
                         //Recreate the search index
                         await _searchService.Index(options);
                     }
@@ -127,7 +128,7 @@ namespace sfa.poc.matching.search.azure
         private async Task PerformFullSearch(string input)
         {
             //Crude way of getting lat/long/distance
-            var tokens = input.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var tokens = input.Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
             await PerformFullSearch(tokens);
         }
 
@@ -173,15 +174,21 @@ namespace sfa.poc.matching.search.azure
 
             var results = (await _searchService.SearchCombinedIndex(searchText, latitude, longitude, radius)).ToList();
             Console.WriteLine($"Found {results.Count} results.");
-            foreach (var searchResult in results)
+
+            if (latitude != 0 && longitude != 0 && radius != 0)
             {
-                if (latitude != 0 && longitude != 0 && radius != 0)
+                foreach (var searchResult in results)
                 {
-                    Console.WriteLine($"{searchResult.Postcode}, {searchResult.Distance} miles, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - {searchResult.ProviderName} has course {searchResult.LarsId} '{searchResult.CourseName}'");
+                    Console.WriteLine(
+                        $"{searchResult.SearchScore}: {searchResult.Postcode}, {searchResult.Distance} miles, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - {searchResult.ProviderName} has course {searchResult.LarsId} '{searchResult.CourseName}'");
                 }
-                else
+            }
+            else
+            {
+                foreach (var searchResult in results
+                    .OrderByDescending(s => s.SearchScore))
                 {
-                    Console.WriteLine($"{searchResult.Postcode}, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - {searchResult.ProviderName} has course {searchResult.LarsId} '{searchResult.CourseName}'");
+                    Console.WriteLine($"{searchResult.SearchScore}: {searchResult.Postcode}, ({searchResult.Location.Latitude}, {searchResult.Location.Latitude}) - {searchResult.ProviderName} has course {searchResult.LarsId} '{searchResult.CourseName}'");
                 }
             }
         }

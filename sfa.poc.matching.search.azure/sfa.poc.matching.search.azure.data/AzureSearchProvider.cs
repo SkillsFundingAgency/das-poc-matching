@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -370,7 +371,7 @@ namespace sfa.poc.matching.search.azure.data
                 {
                     new NGramTokenizer(SearchConstants.NGramTokenizerName)
                     {
-                        MinGram = 5,
+                        MinGram = 4,
                         MaxGram = 30,
                         TokenChars = new List<TokenCharacterKind>
                         {
@@ -501,8 +502,13 @@ namespace sfa.poc.matching.search.azure.data
                 }
             };
 
+            var startLatitude = 0d;
+            var startLongitude = 0d;
+
             if (latitude != 0 && longitude != 0)
             {
+                startLatitude = Convert.ToDouble(latitude);
+                startLongitude = Convert.ToDouble(longitude);
                 var radius = Convert.ToDouble(searchRadius) * SearchConstants.MilesToMeters / 1000;
 
                 Console.WriteLine($"Searching for locations within {radius} miles ({radius}km) of ({latitude}, {longitude})");
@@ -517,8 +523,29 @@ namespace sfa.poc.matching.search.azure.data
 
             var searchResults = await indexClient.Documents.SearchAsync<CombinedIndexedItem>(searchText, searchParameters);
 
-            var results = searchResults.Results.Select(r => r.Document).ToList();
-            SetDistancesInSearchResults(latitude, longitude, results);
+            Debug.Print($"{searchResults.Results} results. Scores:");
+            foreach (var sr in searchResults.Results)
+            {
+                Debug.Print($"    {sr.Score}: '{sr.Document.CourseName}'");
+            }
+
+            var calculator = new DistanceCalculator();
+
+            var results = searchResults.Results.Select(r =>
+                {
+                    r.Document.SearchScore = r.Score;
+                    if (latitude != 0 && longitude != 0)
+                    {
+                        r.Document.Distance = calculator.DistanceFromLatLong(
+                            startLatitude,
+                            startLongitude,
+                            r.Document.Location.Latitude,
+                            r.Document.Location.Longitude);
+                        }
+                    return r.Document;
+                })
+                .ToList();
+            //SetDistancesInSearchResults(latitude, longitude, results);
 
             return results;
         }

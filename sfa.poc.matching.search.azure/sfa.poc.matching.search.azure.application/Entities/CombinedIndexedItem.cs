@@ -76,7 +76,11 @@ namespace sfa.poc.matching.search.azure.application.Entities
 
         [IsFilterable, IsFacetable, IsSortable]
         public string AdminCounty { get; set; }
-        
+
+        //This is used to display search score after results are returned.
+        [JsonIgnore]
+        public double SearchScore { get; set; }
+
         private string DebuggerDisplay => $"CoCombinedIndexedItem: {Id} {CourseName} {Postcode} {ProviderName}";
     }
 }
